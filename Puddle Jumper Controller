@@ -134,7 +134,6 @@ if(first()|dupefinished()){
     Pitch_AngVel = AngVel:pitch()*Pitch_Ang_Drag
     Yaw_AngVel   = AngVel:yaw()*Yaw_Ang_Drag
     Roll_AngVel  = AngVel:roll()*Roll_Ang_Drag
-    Roll_Ang  = Base:angles():roll()*Roll_Force
     
     Base_Y_Vel = Base:velL():y()
     
@@ -143,7 +142,7 @@ if(first()|dupefinished()){
     if(changed(Seat:driver():keySprint())&Seat:driver():keySprint()){
         Boosters=!Boosters
     }
-    Lean=Leaning
+    Lean=(Leaning*(Base:velL():x()>25))+(-(Leaning*0.5)*!(Base:velL():x()>25))
     
     Pitch_Ang = clamp(holoEntity(1):toLocal(CamAng):pitch(),-6,6)*Aim_Force     #420 - 0 + 420 Up Negative
     Yaw_Ang   = clamp(holoEntity(1):toLocal(CamAng):yaw(),-6,6)*Aim_Force       #420 - 0 + 420 Right Negative
@@ -179,10 +178,6 @@ if(first()|dupefinished()){
         }
     }
 }
-#[
-    Weapons Bay = Blue / 37
-    Booster Bay = Yellow / 68
-]#
 if(Boosters){
     if(Val1<68){
         Val1=Val1+68/20
