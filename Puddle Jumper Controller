@@ -1,6 +1,6 @@
 @name Puddle Jumper Controller
 @inputs [Hatch Door Door2 Base Seat OffsetPlate]:entity CamAng:angle OpenHatchIn OpenHatchOut OpenDoorIn OpenDoorOut
-@outputs Active CamPos:vector CamDistance Yaw_Ang Pitch_Ang Helper_Yaw Helper_Pitch Boosters CamMode
+@outputs Active CamPos:vector CamDistance Yaw_Ang Pitch_Ang Helper_Yaw Helper_Pitch Boosters CamMode Fire Fire2
 @persist Pitch_Ang_Drag Yaw_Ang_Drag Roll_Ang_Drag Aim_Force Roll_Force Leaning_Force Mass Boosters PowerOn CamMode CamPos:vector CamDistance
 @persist HorizontalMultiplier VerticalMultiplier ThrustMultiplier BoostMultiplier AccelerationMultiplier Cloak HatchToggle ToggleDoor
 @persist Val1 Val2 Val3 Val4
@@ -142,6 +142,8 @@ if(first()|dupefinished()){
     holoParent(6,Base)
     
 }else{
+    Fire=Seat:driver():keyAttack2()
+    Fire2=(Seat:driver():keyAttack1())*Boosters
     Active=Seat:driver():isPlayer()
     if(changed(Seat:driver():keyReload())&Seat:driver():keyReload()){
         PowerOn=!PowerOn
