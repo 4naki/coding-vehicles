@@ -1,0 +1,395 @@
+@name Vertex Steering Wheel E2 by Naki
+@inputs [Base WheelPlate]:entity
+@persist Int
+if(first()){
+    
+    entity():setAlpha(0)
+    
+    holoCreate(1)
+    holoPos(1,entity():toWorld(vec(0,0,2)))
+    holoAng(1,entity():toWorld(ang(-90,0,0)))
+    holoModel(1,"models/sprops/trans/stwheels/stwheel_1.mdl")
+    holoMaterial(1,"models/debug/debugwhite")
+    holoColor(1,vec(28))
+    holoSkin(1,2)
+    holoParent(1,entity())
+    
+    holoCreate(2)
+    holoPos(2,entity():toWorld(vec(0,0,-5)))
+    holoAng(2,entity():toWorld(ang(0,0,0)))
+    holoModel(2,"models/sprops/cylinders/size_3/cylinder_6x12.mdl")
+    holoMaterial(2,"models/debug/debugwhite")
+    holoColor(2,vec(55))
+    
+    holoParent(2,holoEntity(1))
+    holoScale(2,vec(0.65,0.65,1))
+    
+    holoCreate(3)
+    holoPos(3,entity():toWorld(vec(0,0,3)))
+    holoAng(3,entity():toWorld(ang(0,0,90)))
+    holoModel(3,"models/sprops/misc/tubes_superthin/size_1/tube_0_5.mdl")
+    holoMaterial(3,"models/debug/debugwhite")
+    holoColor(3,vec(255))
+    
+    holoParent(3,holoEntity(1))
+    holoScale(3,vec(0.3,1,0.3))
+    
+    Scale=vec(0.28)
+    
+    Text1="vertex"
+    Text2="japan"
+    Text3="@_Tande_co.,ltd"
+    
+    Int=250
+    
+    timer("toptext",Int)
+    for(I2=1,Text1:explode(""):count()){
+        I=I2+100
+        holoCreate(I+1)
+        if(I2==1){
+            holoPos(I+1,entity():toWorld((vec(0,-0.75*Text1:explode(""):count(),3.25)+vec(0,0,0))*vec(Scale:x(),Scale:y(),1)))
+        }else{
+            holoPos(I+1,holoEntity(I):toWorld(vec(-1.8,0,0)*vec(Scale:x(),Scale:y(),Scale:z())))
+        }
+        holoAng(I+1,entity():toWorld(ang(0,-90,90)))
+        holoParent(I+1,holoEntity(1))
+        holoScale(I+1,vec(0.12,0.05,0.13)*vec(Scale:y(),Scale:x(),Scale:z()))
+        
+        if(Text1:explode("")[I2,string]=="["){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_lbracket.mdl")
+        }elseif(Text1:explode("")[I2,string]=="]"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_rbracket.mdl")
+        }elseif(Text1:explode("")[I2,string]=="."){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_prd.mdl")
+        }elseif(Text1:explode("")[I2,string]==","){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_com.mdl")
+        }elseif(Text1:explode("")[I2,string]=="-"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_min.mdl")
+        }elseif(Text1:explode("")[I2,string]=="_"){
+            holoModel(I+1,"")
+            holoAlpha(I+1,0)
+        }else{
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_"+Text1:explode("")[I2,string]+".mdl")
+        }
+        holoBodygroup(I+1,0,2)
+        holoMaterial(I+1,"models/debug/debugwhite")
+        holoColor(I+1,vec(255))
+    }
+    
+    for(I2=1,Text2:explode(""):count()){
+        I=I2+200
+        holoCreate(I+1)
+        if(I2==1){
+            holoPos(I+1,entity():toWorld((vec(0,-0.3*Text2:explode(""):count(),3.25)+vec(1.5,0,0))*vec(Scale:x(),Scale:y(),1)))
+        }else{
+            holoPos(I+1,holoEntity(I):toWorld(vec(-1.52,0,0)*vec(Scale:x(),Scale:y(),Scale:z())))
+        }
+        holoAng(I+1,entity():toWorld(ang(0,-90,90)))
+        holoParent(I+1,holoEntity(1))
+        holoScale(I+1,vec(0.12*0.35,0.05,0.13*0.4)*vec(Scale:y(),Scale:x(),Scale:z()))
+        
+        if(Text2:explode("")[I2,string]=="["){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_lbracket.mdl")
+        }elseif(Text2:explode("")[I2,string]=="]"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_rbracket.mdl")
+        }elseif(Text2:explode("")[I2,string]=="."){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_prd.mdl")
+        }elseif(Text2:explode("")[I2,string]==","){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_com.mdl")
+        }elseif(Text2:explode("")[I2,string]=="-"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_min.mdl")
+        }elseif(Text2:explode("")[I2,string]=="_"){
+            holoModel(I+1,"")
+            holoAlpha(I+1,0)
+        }else{
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_"+Text2:explode("")[I2,string]+".mdl")
+        }
+        holoBodygroup(I+1,0,2)
+        holoMaterial(I+1,"models/debug/debugwhite")
+        holoColor(I+1,vec(255))
+    }
+    
+    for(I2=1,Text3:explode(""):count()){
+        I=I2+300
+        holoCreate(I+1)
+        if(I2==1){
+            holoPos(I+1,entity():toWorld((vec(0,-0.2*Text3:explode(""):count(),3.25)+vec(3.4,0,0))*vec(Scale:x(),Scale:y(),1)))
+        }else{
+            holoPos(I+1,holoEntity(I):toWorld(vec(-0.45,0,0)*vec(Scale:x(),Scale:y(),Scale:z())))
+        }
+        holoAng(I+1,entity():toWorld(ang(0,-90,90)))
+        holoParent(I+1,holoEntity(1))
+        
+        if(Text3:explode("")[I2,string]=="@"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_atsign.mdl")
+            holoScale(I+1,vec(0.12*0.7,0.05,0.13*0.7)*vec(Scale:y(),Scale:x(),Scale:z()))
+        }else{
+            holoScale(I+1,vec(0.12*0.3,0.05,0.13*0.4)*vec(Scale:y(),Scale:x(),Scale:z()))
+        if(Text3:explode("")[I2,string]=="["){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_lbracket.mdl")
+        }elseif(Text3:explode("")[I2,string]=="]"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_rbracket.mdl")
+        }elseif(Text3:explode("")[I2,string]=="."){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_prd.mdl")
+        }elseif(Text3:explode("")[I2,string]==","){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_com.mdl")
+        }elseif(Text3:explode("")[I2,string]=="-"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_min.mdl")
+        }elseif(Text3:explode("")[I2,string]=="_"){
+            holoModel(I+1,"")
+            holoAlpha(I+1,0)
+        }else{
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_"+Text3:explode("")[I2,string]+".mdl")
+        }
+        }
+        holoBodygroup(I+1,0,2)
+        holoMaterial(I+1,"models/debug/debugwhite")
+        holoColor(I+1,vec(255))
+    }
+}
+
+if(clk("toptext")){
+    #v
+    holoAng(2,entity():toWorld(ang(0,14.5,0)))
+    holoCreate(4)
+    holoPos(4,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(4,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(4,holoEntity(1))
+    holoScale(4,vec(0.07,0.15,0.07))
+    holoModel(4,"models/sprops/misc/alphanum/alphanum_v.mdl")
+    holoBodygroup(4,0,2)
+    holoMaterial(4,"models/debug/debugwhite")
+    holoColor(4,vec(255))
+    timer("next",Int)
+}
+
+if(clk("next")){
+    #e
+    holoAng(2,entity():toWorld(ang(0,9.5,0)))
+    holoCreate(5)
+    holoPos(5,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(5,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(5,holoEntity(1))
+    holoScale(5,vec(0.07,0.15,0.07))
+    holoModel(5,"models/sprops/misc/alphanum/alphanum_e.mdl")
+    holoBodygroup(5,0,2)
+    holoMaterial(5,"models/debug/debugwhite")
+    holoColor(5,vec(255))
+    timer("next1",Int)
+}
+
+if(clk("next1")){
+    #r
+    holoAng(2,entity():toWorld(ang(0,3.5,0)))
+    holoCreate(6)
+    holoPos(6,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(6,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(6,holoEntity(1))
+    holoScale(6,vec(0.07,0.15,0.07))
+    holoModel(6,"models/sprops/misc/alphanum/alphanum_r.mdl")
+    holoBodygroup(6,0,2)
+    holoMaterial(6,"models/debug/debugwhite")
+    holoColor(6,vec(255))
+    timer("next2",Int)
+}
+
+if(clk("next2")){
+    #t
+    holoAng(2,entity():toWorld(ang(0,-3.5,0)))
+    holoCreate(7)
+    holoPos(7,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(7,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(7,holoEntity(1))
+    holoScale(7,vec(0.07,0.15,0.07))
+    holoModel(7,"models/sprops/misc/alphanum/alphanum_t.mdl")
+    holoBodygroup(7,0,2)
+    holoMaterial(7,"models/debug/debugwhite")
+    holoColor(7,vec(255))
+    timer("next3",Int)
+}
+
+if(clk("next3")){
+    #e
+    holoAng(2,entity():toWorld(ang(0,-8,0)))
+    holoCreate(8)
+    holoPos(8,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(8,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(8,holoEntity(1))
+    holoScale(8,vec(0.07,0.15,0.07))
+    holoModel(8,"models/sprops/misc/alphanum/alphanum_e.mdl")
+    holoBodygroup(8,0,2)
+    holoMaterial(8,"models/debug/debugwhite")
+    holoColor(8,vec(255))
+    timer("next4",Int)
+}
+
+if(clk("next4")){
+    #x
+    holoAng(2,entity():toWorld(ang(0,-14.5,0)))
+    holoCreate(9)
+    holoPos(9,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(9,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(9,holoEntity(1))
+    holoScale(9,vec(0.07,0.15,0.07))
+    holoModel(9,"models/sprops/misc/alphanum/alphanum_x.mdl")
+    holoBodygroup(9,0,2)
+    holoMaterial(9,"models/debug/debugwhite")
+    holoColor(9,vec(255))
+    timer("next5",Int)
+}
+
+if(clk("next5")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,21,0)))
+    holoCreate(10)
+    holoPos(10,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(10,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(10,holoEntity(1))
+    holoScale(10,vec(0.06,0.15,0.06))
+    holoModel(10,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(10,0,0)
+    holoMaterial(10,"models/debug/debugwhite")
+    holoColor(10,vec(255))
+    timer("next6",Int)
+}
+
+if(clk("next6")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,-21,0)))
+    holoCreate(11)
+    holoPos(11,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(11,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(11,holoEntity(1))
+    holoScale(11,vec(0.06,0.15,0.06))
+    holoModel(11,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(11,0,0)
+    holoMaterial(11,"models/debug/debugwhite")
+    holoColor(11,vec(255))
+    timer("next7",Int)
+}
+
+if(clk("next7")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,21+3.5,0)))
+    holoCreate(12)
+    holoPos(12,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(12,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(12,holoEntity(1))
+    holoScale(12,vec(0.06,0.15,0.06))
+    holoModel(12,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(12,0,0)
+    holoMaterial(12,"models/debug/debugwhite")
+    holoColor(12,vec(255))
+    timer("next8",Int)
+}
+
+if(clk("next8")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,-21-3.5,0)))
+    holoCreate(13)
+    holoPos(13,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(13,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(13,holoEntity(1))
+    holoScale(13,vec(0.06,0.15,0.06))
+    holoModel(13,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(13,0,0)
+    holoMaterial(13,"models/debug/debugwhite")
+    holoColor(13,vec(255))
+    timer("next9",Int)
+}
+
+if(clk("next9")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,21+7,0)))
+    holoCreate(14)
+    holoPos(14,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(14,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(14,holoEntity(1))
+    holoScale(14,vec(0.06,0.15,0.06))
+    holoModel(14,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(14,0,0)
+    holoMaterial(14,"models/debug/debugwhite")
+    holoColor(14,vec(255))
+    timer("next10",Int)
+}
+
+if(clk("next10")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,-21-7,0)))
+    holoCreate(15)
+    holoPos(15,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(15,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(15,holoEntity(1))
+    holoScale(15,vec(0.06,0.15,0.06))
+    holoModel(15,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(15,0,0)
+    holoMaterial(15,"models/debug/debugwhite")
+    holoColor(15,vec(255))
+    timer("next11",Int)
+}
+
+if(clk("next11")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,21+10.5,0)))
+    holoCreate(16)
+    holoPos(16,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(16,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(16,holoEntity(1))
+    holoScale(16,vec(0.06,0.15,0.06))
+    holoModel(16,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(16,0,0)
+    holoMaterial(16,"models/debug/debugwhite")
+    holoColor(16,vec(255))
+    timer("next12",Int)
+}
+
+if(clk("next12")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,-21-10.5,0)))
+    holoCreate(17)
+    holoPos(17,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(17,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(17,holoEntity(1))
+    holoScale(17,vec(0.06,0.15,0.06))
+    holoModel(17,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(17,0,0)
+    holoMaterial(17,"models/debug/debugwhite")
+    holoColor(17,vec(255))
+    timer("next13",Int)
+}
+
+if(clk("next13")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,21+14,0)))
+    holoCreate(18)
+    holoPos(18,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(18,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(18,holoEntity(1))
+    holoScale(18,vec(0.06,0.15,0.06))
+    holoModel(18,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(18,0,0)
+    holoMaterial(18,"models/debug/debugwhite")
+    holoColor(18,vec(255))
+    timer("next14",Int)
+}
+
+if(clk("next14")){
+    #star
+    holoAng(2,entity():toWorld(ang(0,-21-14,0)))
+    holoCreate(19)
+    holoPos(19,holoEntity(2):toWorld(vec(-8.45,0,8.5)))
+    holoAng(19,holoEntity(2):toWorld(ang(0,-90,85)))
+    holoParent(19,holoEntity(1))
+    holoScale(19,vec(0.06,0.15,0.06))
+    holoModel(19,"models/sprops/misc/alphanum/alphanum_star_3.mdl")
+    holoBodygroup(19,0,0)
+    holoMaterial(19,"models/debug/debugwhite")
+    holoColor(19,vec(255))
+}
+interval(100)
+
+holoAng(1,entity():toWorld(ang(-90,(WheelPlate:angles():yaw()-Base:angles():yaw())*5,0)))
+
+if(dupefinished()){
+    reset()
+}
