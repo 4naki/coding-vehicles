@@ -1,0 +1,111 @@
+@name Vertex Vanity Plate (Variant 2, Black On Gold)
+@persist TopFont BottomFont Shiny [Text1 Text2]:string [TopTextOffset BottomTextColor TopTextColor PlateColor Scale]:vector
+@model models/sprops/trans/plates/license_1.mdl
+if(first()){
+    
+    entity():setAlpha(0)
+    
+    TopFont=2
+    BottomFont=0
+    
+    Scale=vec(1,1.2,1.2)
+    
+    PlateColor=vec(158, 126, 70)*1.5
+    
+    TopTextColor=vec(5, 5, 5)
+    BottomTextColor=vec(5, 5, 5)
+    
+    TopTextOffset=vec(0,1.45,-0.8)
+    BottomTextOffset=vec(0,0,0)
+    
+    Shiny=1
+    
+    Text1="Tande_co.,ltd"
+    
+    Text2="vertex"
+    
+    if(Shiny){
+        Material="phoenix_storms/grey_chrome"
+    }else{
+        Material="models/debug/debugwhite"
+    }
+    holoCreate(1)
+    holoPos(1,entity():toWorld(vec(0,0,0)))
+    holoAng(1,entity():toWorld(ang(0,0,0)))
+    holoParent(1,entity())
+    holoScale(1,Scale)
+    
+    holoModel(1,"models/sprops/trans/plates/license_1.mdl")
+    holoMaterial(1,Material)
+    holoColor(1,PlateColor)
+    
+    for(I=1,Text1:explode(""):count()){
+        holoCreate(I+1)
+        if(I==1){
+            holoPos(I+1,entity():toWorld((vec(0.25,(-0.66*Text1:explode(""):count())*0.3,1)+TopTextOffset)*vec(Scale:x(),Scale:y(),Scale:z())))
+        }else{
+            holoPos(I+1,holoEntity(I):toWorld(vec(-1.8*0.3,0,0)*vec(Scale:x(),Scale:y(),Scale:z())))
+        }
+        holoAng(I+1,entity():toWorld(ang(0,-90,0)))
+        holoParent(I+1,entity())
+        holoScale(I+1,(vec(0.12*0.3,0.05,0.13*0.3))*vec(Scale:y(),Scale:x(),Scale:z()))
+        
+        if(Text1:explode("")[I,string]=="["){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_lbracket.mdl")
+        }elseif(Text1:explode("")[I,string]=="]"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_rbracket.mdl")
+        }elseif(Text1:explode("")[I,string]=="."){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_prd.mdl")
+        }elseif(Text1:explode("")[I,string]==","){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_com.mdl")
+        }elseif(Text1:explode("")[I,string]=="-"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_min.mdl")
+        }elseif(Text1:explode("")[I,string]=="_"){
+            holoModel(I+1,"")
+            holoAlpha(I+1,0)
+        }else{
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_"+Text1:explode("")[I,string]+".mdl")
+        }
+        holoBodygroup(I+1,0,TopFont)
+        holoMaterial(I+1,Material)
+        holoColor(I+1,TopTextColor)
+    }
+    
+    for(I2=1,Text2:explode(""):count()){
+        I=I2+999
+        holoCreate(I+1)
+        if(I2==1){
+            holoPos(I+1,entity():toWorld((vec(0.25,-0.66*Text2:explode(""):count(),-1)+BottomTextOffset)*vec(Scale:x(),Scale:y(),Scale:z())))
+        }else{
+            holoPos(I+1,holoEntity(I):toWorld(vec(-1.8,0,0)*vec(Scale:x(),Scale:y(),Scale:z())))
+        }
+        holoAng(I+1,entity():toWorld(ang(0,-90,0)))
+        holoParent(I+1,entity())
+        holoScale(I+1,vec(0.12,0.05,0.13)*vec(Scale:y(),Scale:x(),Scale:z()))
+        
+        if(Text2:explode("")[I2,string]=="["){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_lbracket.mdl")
+        }elseif(Text2:explode("")[I2,string]=="]"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_rbracket.mdl")
+        }elseif(Text2:explode("")[I2,string]=="."){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_prd.mdl")
+        }elseif(Text2:explode("")[I2,string]==","){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_com.mdl")
+        }elseif(Text2:explode("")[I2,string]=="-"){
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_min.mdl")
+        }elseif(Text2:explode("")[I2,string]=="_"){
+            holoModel(I+1,"")
+            holoAlpha(I+1,0)
+        }else{
+            holoModel(I+1,"models/sprops/misc/alphanum/alphanum_"+Text2:explode("")[I2,string]+".mdl")
+        }
+        holoBodygroup(I+1,0,BottomFont)
+        holoMaterial(I+1,Material)
+        holoColor(I+1,BottomTextColor)
+    }
+    
+}
+
+if(dupefinished()){
+    reset()
+}
