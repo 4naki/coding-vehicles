@@ -1,0 +1,82 @@
+@name GearShifter 2
+@inputs Gear
+@outputs 
+@persist Gears:array E:entity Val
+@trigger 
+
+if(first() | dupefinished()){
+    E = entity()
+    
+    Val = 10
+    
+    Gears = array(    #Gears for 6 speed acf/othershit
+    ang(-Val,0,-Val), #1
+    ang(-Val,0,Val),  #2
+    ang(0,0,-Val),    #3
+    ang(0,0,Val),     #4
+    ang(Val,0,-Val),  #5
+    ang(Val,0,Val)    #R 
+    )
+    
+    Gear = 0
+    
+    holoCreate(1)
+    holoScale(1,vec(0.5))
+    holoModel(1,"hq_icosphere")
+    holoParent(1,E)
+    holoColor(1,vec(50))
+    
+    holoCreate(2)
+    holoModel(2,"hq_cylinder") 
+    holoMaterial(2,"sprops/trans/wheels/wheel_d_rim2")
+    holoColor(2,vec(120))
+    holoScale(2,vec(0))   
+    holoParent(2,E)
+    holoPos(2,E:toWorld(vec(0,0,0)))
+    holoClipEnabled(2,1)
+    holoClip(2,vec(0,0,0.1),vec(0,0,1),0)
+    
+    holoCreate(3)
+    holoMaterial(3,"sprops/trans/wheels/wheel_d_rim2")
+    holoColor(3,vec(120))
+    holoModel(3,"hq_rcylinder_thick")
+    holoScale(3,vec(0.17,0.17,0.3))
+    holoPos(3,E:toWorld(vec(0,0,12)))
+    holoParent(3,holoEntity(2))
+    
+    holoCreate(4)
+    holoModel(4,"hq_cylinder")
+    holoMaterial(4,"sprops/trans/wheels/wheel_d_rim2")
+    holoColor(4,vec(120))
+    holoScale(4,vec(0.15))
+    holoPos(4,E:toWorld(vec(0,0,11.19)))
+    holoParent(4,holoEntity(2))
+    
+    holoCreate(15,E:toWorld(vec(0.05,0.05,-2)),vec(0.85,0.85,0.6),E:toWorld(ang(0,0,0)))
+    holoModel(15,"models/props_c17/pottery01a.mdl")
+    holoParent(15,E)
+    holoMaterial(15,"models/debug/debugwhite")
+    holoColor(15,vec(35,35,35))
+    
+    holoCreate(16,E:toWorld(vec(0.05,0.05,-2.1)),vec(0.45,0.45,0.5),E:toWorld(ang(0,0,0)))
+    holoModel(16,"models/props_c17/pottery05a.mdl")
+    holoParent(16,holoEntity(2))
+    holoClipEnabled(16,1,1)
+    holoClip(16,1,vec(0,0,2),vec(0,0,1),0)
+    holoClipEnabled(16,2,1)
+    holoClip(16,2,vec(0,0,15),vec(0,0,-1),0)
+    holoMaterial(16,"models/debug/debugwhite")
+    holoColor(16,vec(35,35,35))
+    
+    for(I=5,14){
+     
+        holoMaterial(I,"sprops/trans/wheels/wheel_d_rim1")   
+        
+    }
+    
+    
+#runOnTick(1)    
+}
+
+holoAng(2,E:toWorld(Gears[Gear,angle]))
+if(dupefinished()){reset()}
