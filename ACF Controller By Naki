@@ -1,19 +1,19 @@
 @name ACF Controller By Naki
-@inputs Base:entity Ignition Throttle Reverse GearUp GearDown HandBreak RPM FullThrottle
-@outputs DisableCutoff Gears Gear BreakPower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM MinRPM MaxRPM LimitRPM ThrottleOut Power Stalling HandBreakOut Spat
+@inputs Base:entity Ignition Throttle Reverse GearUp GearDown HandBreak RPM FullThrottle Brake
+@outputs DisableCutoff Gears Gear BrakePower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM MinRPM MaxRPM LimitRPM ThrottleOut Power Stalling HandBreakOut Spat BrakeOut
 
-@persist DisableCutoff Gears Gear BreakPower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM MinRPM MaxRPM LimitRPM ThrottleOut Power Stalling HandBreakOut Spat
+@persist DisableCutoff Gears Gear BrakePower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM MinRPM MaxRPM LimitRPM ThrottleOut Power Stalling HandBreakOut Spat BrakeOut
 if(first()){
     DisableCutoff = 1
     
-    BreakPower=35
+    BrakePower=1
     
     IdleRPM = 950
     MinRPM = 4100
     MaxRPM = 8500
     LimitRPM = 10000
     
-    Gears=5
+    Gears=6
     
     ShiftSpeed=360
     
@@ -39,13 +39,13 @@ if(clk("start")){
 }
 if(Stalling){
     if(RPM<IdleRPM*1.1){
-        if(Power*!Clutch*(Gear>0)){
+        if(Power*!Clutch*(Gear>0)*!HandBreakOut){
             Power=0
         }
     }
 }
 
-if(changed(HandBreak)&HandBreak){
+if(HandBreak){
     Clutch=1
     HandBreakOut=1
 }
@@ -101,5 +101,5 @@ if(Reverse){
         Shifting=0
     }
 }
-
-ThrottleOut=(clamp(((67*Throttle)-(RPM/500)+(45*FullThrottle*Throttle))+(10*Gear>0),0,100))/round(1+(Shifting*0.5))
+BrakeOut=BrakePower*Brake
+ThrottleOut=((clamp(((76*Throttle)-(RPM/500)+(45*FullThrottle*Throttle))+(10*Gear>0),0,100))/round(1+(Shifting*0.5)))*!Clutch
