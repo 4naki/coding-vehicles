@@ -1,8 +1,8 @@
 @name ACF Controller By Naki
 @inputs Base:entity Ignition Throttle Reverse GearUp GearDown HandBreak RPM FullThrottle Brake
-@outputs DisableCutoff Gears Gear BrakePower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM MinRPM MaxRPM LimitRPM ThrottleOut Power Stalling HandBreakOut Spat BrakeOut
+@outputs DisableCutoff Gear Clutch ThrottleOut HandBreakOut BrakeOut Power
 
-@persist DisableCutoff Gears Gear BrakePower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM MinRPM MaxRPM LimitRPM ThrottleOut Power Stalling HandBreakOut Spat BrakeOut
+@persist DisableCutoff Gears Gear BrakePower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM MinRPM MaxRPM LimitRPM ThrottleOut Power Stalling HandBreakOut BrakeOut
 if(first()){
     DisableCutoff = 1
     
