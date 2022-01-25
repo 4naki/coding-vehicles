@@ -102,4 +102,4 @@ if(Reverse){
     }
 }
 BrakeOut=BrakePower*Brake
-ThrottleOut=((clamp(((76*Throttle)-(RPM/500)+(45*FullThrottle*Throttle))+(10*Gear>0),0,100))/round(1+(Shifting*0.5)))*!Clutch
+ThrottleOut=(clamp(((76*Throttle)-(RPM/500)+(45*FullThrottle*Throttle))+(10*Gear>0),0,100))*!Shifting
