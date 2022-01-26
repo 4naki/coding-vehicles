@@ -2,16 +2,13 @@
 @inputs Base:entity Ignition Throttle Reverse GearUp GearDown HandBreak RPM FullThrottle Brake
 @outputs DisableCutoff Gear Clutch ThrottleOut HandBreakOut BrakeOut Power
 
-@persist DisableCutoff Gears Gear BrakePower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM MinRPM MaxRPM LimitRPM ThrottleOut Power Stalling HandBreakOut BrakeOut
+@persist DisableCutoff Gears Gear BrakePower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM ThrottleOut Power Stalling HandBreakOut BrakeOut
 if(first()){
     DisableCutoff = 1
     
     BrakePower=1
     
     IdleRPM = 950
-    MinRPM = 4100
-    MaxRPM = 8500
-    LimitRPM = 10000
     
     Gears=6
     
@@ -20,7 +17,7 @@ if(first()){
     StartingSound="acf_extra/vehiclefx/starters/starter3.wav"
     StartingTime=1600
     
-    Stalling=1
+    Stalling=0
 }
 
 interval(100)
@@ -103,3 +100,7 @@ if(Reverse){
 }
 BrakeOut=BrakePower*Brake
 ThrottleOut=(clamp(((76*Throttle)-(RPM/500)+(45*FullThrottle*Throttle))+(10*Gear>0),0,100))*!Shifting
+
+if(dupefinished()){
+    reset()
+}
