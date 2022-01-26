@@ -1,0 +1,52 @@
+@name Twin Backfire E2 By Naki
+@inputs Exhaust:entity RPM
+@persist LimitRPM
+@trigger none
+
+if(first()){
+    
+    LimitRPM=10000
+    
+    holoCreate(1)
+    holoPos(1,Exhaust:toWorld(vec(4,2.1,-0.3)))
+    holoAng(1,Exhaust:toWorld(ang(0,0,0)))
+    holoParent(1,Exhaust)
+    
+    holoModel(1,"models/effects/muzzleflash/minigunmuzzle.mdl")
+    holoScale(1,vec(0.25))
+    
+    holoCreate(2)
+    holoPos(2,Exhaust:toWorld(vec(4,-2.1,-0.3)))
+    holoAng(2,Exhaust:toWorld(ang(0,0,0)))
+    holoParent(2,Exhaust)
+    
+    holoModel(2,"models/effects/muzzleflash/minigunmuzzle.mdl")
+    holoScale(2,vec(0.25,0.25,0.25))
+    
+    holoAlpha(1,0)
+    holoAlpha(2,0)
+}
+
+interval(100)
+
+Math=clamp(((LimitRPM*0.9)-RPM*0.9)/9,25,1000)
+
+if(RPM>(LimitRPM-(LimitRPM*0.3))){
+    Rand=randint(0,Math)
+if(Rand<20){
+holoAlpha(1,255)
+holoAlpha(2,255)
+holoAng(1,Exhaust:toWorld(ang(0,0,randint(-360,360))))
+holoAng(2,Exhaust:toWorld(ang(0,0,randint(-360,360))))
+#Exhaust:soundPlay("backfire",0.2,"weapons/sg550/sg550-1.wav")
+timer("reset",25)
+}
+}
+if(clk("reset")){
+    holoAlpha(1,0)
+    holoAlpha(2,0)
+}
+
+if(dupefinished()){
+    reset()
+}
