@@ -1,0 +1,430 @@
+@name Holley EFI Screen By Naki (WIP)
+@inputs RPM Right Left CurrentGear Lights
+@persist UseNightColors NumberDistance TabDistance TabLength TabWidth Size GaugeSize MaxRPM RPMAngle RPMOffsetAngle NumberSize [BaseColor TextColor NumberColor NeedleColor TabColor LightsOnColor GearOffset]:vector NumberFont TextFont [BaseMaterial NumberMaterial TabMaterial NeedleMaterial]:string
+@model models/sprops/rectangles_superthin/size_1_5/rect_6x6.mdl
+
+if(first()){
+    Size=1
+    
+    MaxRPM=9000
+    
+    NumberSize=0.7
+    
+    #Def 215
+    #Option 2, 280
+    RPMAngle=280
+    
+    #Def 125
+    #Option 2, 230
+    RPMOffsetAngle=230
+    
+    #Def vec(1.7,0,0)
+    #Option 2, vec(0,1.85,0)
+    GearOffset=vec(0,1.85,0)
+    
+    BaseColor=vec(15)
+    TextColor=vec(255,255,255)
+    NumberColor=vec(0,125,175)
+    NeedleColor=vec(255,0,0)
+    TabColor=vec(170,235,255)
+    TabDistance=2
+    TabLength=0.04
+    TabWidth=0.004
+    
+    LightsOnColor=vec(215,190,0)
+    
+    NumberDistance=1.5
+    
+    NumberFont=0
+    TextFont=3
+    
+    BaseMaterial="models/debug/debugwhite"
+    NumberMaterial="models/debug/debugwhite"
+    TabMaterial="models/debug/debugwhite"
+    NeedleMaterial="models/debug/debugwhite"
+    
+    UseNightColors=1
+    
+    entity():setAlpha(0)
+    
+    holoCreate(1)
+    holoPos(1,entity():toWorld(vec(0,0,0)))
+    holoAng(1,entity():toWorld(ang(0,-90,0)))
+    holoParent(1,entity())
+    
+    holoModel(1,"models/sprops/rectangles_superthin/size_1_5/rect_6x12.mdl")
+    holoMaterial(1,BaseMaterial)
+    holoColor(1,BaseColor)
+    holoAlpha(1,255)
+    
+    holoScale(1,vec(1*Size,1*Size,1))
+    
+    GaugeSize=1*Size
+    
+    for(I=0,round(MaxRPM/1000)){
+        I2=I+500
+        I3=I2+((MaxRPM/1000)+1)
+        I4=I2+((MaxRPM/1000)+2)+(MaxRPM/1000)
+        holoCreate(I2)
+        holoPos(I2,entity():toWorld(vec(0,0,0.15)))
+        holoAng(I2,entity():toWorld(ang(0,RPMOffsetAngle-((RPMAngle/(MaxRPM/1000))*I)-180,0)))
+        holoParent(I2,entity())
+        
+        holoScale(I2,vec(0))
+        
+        holoCreate(I3)
+        holoPos(I3,holoEntity(I2):toWorld(vec(TabDistance,0,0)*GaugeSize))
+        holoAng(I3,holoEntity(I2):toWorld(ang(0,-90,0)))
+        holoParent(I3,entity())
+        
+        holoColor(I3,TabColor)
+        
+        holoScale(I3,vec(TabWidth*GaugeSize,TabLength*GaugeSize,0.03))
+        
+        holoMaterial(I3,TabMaterial)
+        holoDisableShading(I3,1)
+        
+        if(I>9){
+            I5=I:toString()
+            holoCreate(I4)
+            holoPos(I4,holoEntity(I2):toWorld(vec((NumberDistance)*GaugeSize,(0.15*NumberSize)*GaugeSize,0.1)))
+            holoAng(I4,entity():toWorld(ang(0,-90,90)))
+            holoParent(I4,entity())
+            
+            holoColor(I4,NumberColor)
+            
+            holoScale(I4,vec(0.03*NumberSize*GaugeSize,0.03,0.03*NumberSize*GaugeSize))
+            
+            holoModel(I4,"models/sprops/misc/alphanum/alphanum_"+I5:explode("")[1,string]+".mdl")
+            holoMaterial(I4,NumberMaterial)
+            holoBodygroup(I4,0,NumberFont)
+            holoDisableShading(I4,1)
+            
+            holoCreate(I4+1000)
+            holoPos(I4+1000,holoEntity(I4):toWorld(vec(-0.3,0,0)*NumberSize*GaugeSize))
+            holoAng(I4+1000,entity():toWorld(ang(0,-90,90)))
+            holoParent(I4+1000,entity())
+            
+            holoColor(I4+1000,NumberColor)
+            
+            holoScale(I4+1000,vec(0.03*NumberSize*GaugeSize,0.03,0.03*NumberSize*GaugeSize))
+            
+            holoModel(I4+1000,"models/sprops/misc/alphanum/alphanum_"+I5:explode("")[2,string]+".mdl")
+            holoMaterial(I4+1000,NumberMaterial)
+            holoBodygroup(I4+1000,0,NumberFont)
+            holoDisableShading(I4+1000,1)
+        }else{
+            holoCreate(I4)
+            holoPos(I4,holoEntity(I2):toWorld(vec(NumberDistance*GaugeSize,0,0.1)))
+            holoAng(I4,entity():toWorld(ang(0,-90,90)))
+            holoParent(I4,entity())
+            
+            holoColor(I4,NumberColor)
+            
+            holoScale(I4,vec(0.03*NumberSize*GaugeSize,0.03,0.03*NumberSize*GaugeSize))
+            
+            holoModel(I4,"models/sprops/misc/alphanum/alphanum_"+I+".mdl")
+            holoMaterial(I4,NumberMaterial)
+            holoBodygroup(I4,0,NumberFont)
+            holoDisableShading(I4,1)
+        }
+    }
+    
+    for(I=1,5){
+        I2=I+1
+        holoCreate(I2)
+        holoAng(I2,entity():toWorld(ang(0,-90,90)))
+        holoParent(I2,entity())
+        
+        if(I==1){
+            holoModel(I2,"models/sprops/misc/alphanum/alphanum_l_x.mdl")
+            holoPos(I2,entity():toWorld(vec(0.8*GaugeSize,-0.3*GaugeSize,0.15)))
+        }else{
+            holoPos(I2,holoEntity(I2-1):toWorld(vec(-0.2*GaugeSize,0,0)))
+        }
+        
+        if(I==2){
+            holoModel(I2,"models/sprops/misc/alphanum/alphanum_1.mdl")
+        }
+        
+        if(I==3){
+            holoModel(I2,"models/sprops/misc/alphanum/alphanum_0.mdl")
+        }
+        
+        if(I==4){
+            holoModel(I2,"models/sprops/misc/alphanum/alphanum_0.mdl")
+        }
+        
+        if(I==5){
+            holoModel(I2,"models/sprops/misc/alphanum/alphanum_0.mdl")
+        }
+        
+        holoMaterial(I2,NumberMaterial)
+        holoColor(I2,TextColor)
+        holoAlpha(I2,255)
+        
+        holoScale(I2,vec(0.018*GaugeSize,0.1,0.018*GaugeSize))
+        
+        holoBodygroup(I2,0,TextFont)
+        
+        holoDisableShading(I2,1)
+    }
+    
+    holoCreate(7)
+    holoPos(7,holoEntity(500):toWorld(vec(0,0,0)))
+    holoAng(7,holoEntity(500):toWorld(ang(0,0,0)))
+    holoParent(7,entity())
+    
+    holoScale(7,vec(0))
+    
+    
+    holoCreate(8)
+    holoPos(8,holoEntity(7):toWorld(vec(0.8*GaugeSize,0,0.2)))
+    holoAng(8,holoEntity(7):toWorld(ang(0,0,0)))
+    holoParent(8,holoEntity(7))
+    
+    holoColor(8,NeedleColor)
+    
+    holoScale(8,vec(0.2*GaugeSize,0.005*GaugeSize,0.003))
+    
+    holoMaterial(8,NeedleMaterial)
+    holoDisableShading(8,1)
+    
+    
+    holoCreate(9)
+    holoPos(9,entity():toWorld(vec(0,0,0.1)))
+    holoAng(9,entity():toWorld(ang(0,-90,90)))
+    holoParent(9,entity())
+    
+    holoColor(9,TabColor)
+    
+    holoScale(9,vec(0.1*Size,0.3,0.1*Size)*0.45)
+    
+    holoMaterial(9,TabMaterial)
+    holoModel(9,"models/sprops/geometry/fring_120.mdl")
+    holoDisableShading(9,1)
+    
+    holoCreate(10)
+    holoPos(10,entity():toWorld(vec(0.35,3.65*Size,0.1)))
+    holoAng(10,entity():toWorld(ang(0,-50-90,0)))
+    holoParent(10,entity())
+    
+    holoColor(10,TabColor)
+    
+    holoScale(10,vec(0.09*Size,0.09*Size,0.07)*0.45)
+    
+    holoMaterial(10,TabMaterial)
+    holoModel(10,"models/hunter/tubes/tube2x2x025b.mdl")
+    holoDisableShading(10,1)
+    
+    holoCreate(11)
+    holoPos(11,entity():toWorld(vec(0.35*Size,-3.65*Size,0.1)))
+    holoAng(11,entity():toWorld(ang(0,50,0)))
+    holoParent(11,entity())
+    
+    holoColor(11,TabColor)
+    
+    holoScale(11,vec(0.09*Size,0.09*Size,0.07)*0.45)
+    
+    holoMaterial(11,TabMaterial)
+    holoModel(11,"models/hunter/tubes/tube2x2x025b.mdl")
+    holoDisableShading(11,1)
+    
+    holoCreate(12)
+    holoPos(12,entity():toWorld(vec(GearOffset:x()*Size,GearOffset:y()*Size,0.15)))
+    holoAng(12,entity():toWorld(ang(0,-90,90)))
+    holoParent(12,entity())
+    
+    holoColor(12,NumberColor)
+    
+    holoScale(12,vec(0.1*GaugeSize,0.1,0.1*GaugeSize))
+    
+    holoModel(12,"models/sprops/misc/alphanum/alphanum_"+CurrentGear+".mdl")
+    holoMaterial(12,NumberMaterial)
+    holoDisableShading(12,1)
+    
+    holoCreate(13)
+    holoPos(13,entity():toWorld(vec(0.35*Size,-3.9*Size,0.15)))
+    holoAng(13,entity():toWorld(ang(0,-90,90)))
+    holoParent(13,entity())
+    
+    holoColor(13,NumberColor)
+    
+    holoScale(13,vec(0.08*GaugeSize,0.1,0.08*GaugeSize))
+    
+    holoModel(13,"models/sprops/misc/alphanum/alphanum_"+Left+".mdl")
+    holoMaterial(13,NumberMaterial)
+    holoDisableShading(13,1)
+    
+    holoCreate(14)
+    holoPos(14,entity():toWorld(vec(0.35*Size,-3.9*Size,0.15)))
+    holoAng(14,entity():toWorld(ang(0,-90,90)))
+    holoParent(14,entity())
+    
+    holoColor(14,NumberColor)
+    
+    holoScale(14,vec(0.08*GaugeSize,0.1,0.08*GaugeSize))
+    
+    holoModel(14,"models/sprops/misc/alphanum/alphanum_"+Left+".mdl")
+    holoMaterial(14,NumberMaterial)
+    holoDisableShading(14,1)
+    
+    holoCreate(15)
+    holoPos(15,entity():toWorld(vec(0.35*Size,3.9*Size,0.15)))
+    holoAng(15,entity():toWorld(ang(0,-90,90)))
+    holoParent(15,entity())
+    
+    holoColor(15,NumberColor)
+    
+    holoScale(15,vec(0.08*GaugeSize,0.1,0.08*GaugeSize))
+    
+    holoModel(15,"models/sprops/misc/alphanum/alphanum_"+Left+".mdl")
+    holoMaterial(15,NumberMaterial)
+    holoDisableShading(15,1)
+    
+    holoCreate(16)
+    holoPos(16,entity():toWorld(vec(0.35*Size,3.9*Size,0.15)))
+    holoAng(16,entity():toWorld(ang(0,-90,90)))
+    holoParent(16,entity())
+    
+    holoColor(16,NumberColor)
+    
+    holoScale(16,vec(0.08*GaugeSize,0.1,0.08*GaugeSize))
+    
+    holoModel(16,"models/sprops/misc/alphanum/alphanum_"+Left+".mdl")
+    holoMaterial(16,NumberMaterial)
+    holoDisableShading(16,1)
+    
+    holoCreate(17)
+    holoPos(17,entity():toWorld(vec(0.35*Size,3.9*Size,0.15)))
+    holoAng(17,entity():toWorld(ang(0,-90,90)))
+    holoParent(17,entity())
+    
+    holoColor(17,NumberColor)
+    
+    holoScale(17,vec(0.08*GaugeSize,0.1,0.08*GaugeSize))
+    
+    holoModel(17,"models/sprops/misc/alphanum/alphanum_"+Left+".mdl")
+    holoMaterial(17,NumberMaterial)
+    holoDisableShading(17,1)
+    
+    holoCreate(18)
+    holoPos(18,entity():toWorld(vec(0.35*Size,3.9*Size,0.15)))
+    holoAng(18,entity():toWorld(ang(0,-90,90)))
+    holoParent(18,entity())
+    
+    holoColor(18,NumberColor)
+    
+    holoScale(18,vec(0.08*GaugeSize,0.1,0.08*GaugeSize))
+    
+    holoModel(18,"models/sprops/misc/alphanum/alphanum_"+Left+".mdl")
+    holoMaterial(18,NumberMaterial)
+    holoDisableShading(18,1)
+}
+
+if(changed(Lights)){
+    if(!Lights){
+        for(I=0,round(MaxRPM/1000)){
+            I2=I+500
+            I3=I2+((MaxRPM/1000)+1)
+            I4=I2+((MaxRPM/1000)+2)+(MaxRPM/1000)
+            
+            holoColor(I3,TabColor)
+            holoColor(I4,NumberColor)
+            holoColor(I4+1000,NumberColor)
+        }
+        for(I=1,5){
+            I2=I+1
+            holoColor(I2,TextColor)
+        }
+        holoColor(8,NeedleColor)
+        holoColor(9,TabColor)
+        holoColor(10,TabColor)
+        holoColor(11,TabColor)
+        holoColor(12,NumberColor)
+        holoColor(13,NumberColor)
+        holoColor(14,NumberColor)
+        holoColor(16,NumberColor)
+        holoColor(17,NumberColor)
+        holoColor(18,NumberColor)
+    }else{
+        for(I=0,round(MaxRPM/1000)){
+            I2=I+500
+            I3=I2+((MaxRPM/1000)+1)
+            I4=I2+((MaxRPM/1000)+2)+(MaxRPM/1000)
+            
+            holoColor(I3,LightsOnColor)
+            holoColor(I4,LightsOnColor)
+            holoColor(I4+1000,LightsOnColor)
+        }
+        for(I=1,5){
+            I2=I+1
+            holoColor(I2,LightsOnColor)
+        }
+        holoColor(8,NeedleColor)
+        holoColor(9,LightsOnColor)
+        holoColor(10,LightsOnColor)
+        holoColor(11,LightsOnColor)
+        holoColor(12,LightsOnColor)
+        holoColor(13,LightsOnColor)
+        holoColor(14,LightsOnColor)
+        holoColor(16,LightsOnColor)
+        holoColor(17,LightsOnColor)
+        holoColor(18,LightsOnColor)
+    }
+}
+
+interval(100)
+
+holoAng(7,holoEntity(500):toWorld(ang(0,(-RPMAngle/MaxRPM)*RPM,0)))
+
+if(changed(CurrentGear)){
+    holoModel(12,"models/sprops/misc/alphanum/alphanum_"+CurrentGear+".mdl")
+}
+I6=Left:toString()
+if(Left>=100){
+    holoModel(13,"models/sprops/misc/alphanum/alphanum_"+I6:explode("")[1,string]+".mdl")
+    holoModel(14,"models/sprops/misc/alphanum/alphanum_"+I6:explode("")[2,string]+".mdl")
+    holoModel(15,"models/sprops/misc/alphanum/alphanum_"+I6:explode("")[3,string]+".mdl")
+    holoAlpha(14,255)
+    holoAlpha(15,255)
+    holoPos(13,entity():toWorld(vec(0.35*Size,(-3.9-0.8)*Size,0.15)))
+    holoPos(14,entity():toWorld(vec(0.35*Size,(-3.9)*Size,0.15)))
+    holoPos(15,entity():toWorld(vec(0.35*Size,(-3.9+0.8)*Size,0.15)))
+}elseif(Left>=10){
+    holoModel(13,"models/sprops/misc/alphanum/alphanum_"+I6:explode("")[1,string]+".mdl")
+    holoModel(14,"models/sprops/misc/alphanum/alphanum_"+I6:explode("")[2,string]+".mdl")
+    holoAlpha(14,255)
+    holoAlpha(15,0)
+    holoPos(14,entity():toWorld(vec(0.35*Size,(-3.9+0.4)*Size,0.15)))
+    holoPos(13,entity():toWorld(vec(0.35*Size,(-3.9-0.4)*Size,0.15)))
+}else{
+    holoModel(13,"models/sprops/misc/alphanum/alphanum_"+I6:explode("")[1,string]+".mdl")
+    holoAlpha(14,0)
+    holoAlpha(15,0)
+    holoPos(13,entity():toWorld(vec(0.35*Size,(-3.9)*Size,0.15)))
+}
+
+I7=Right:toString()
+if(Right>=100){
+    holoModel(16,"models/sprops/misc/alphanum/alphanum_"+I7:explode("")[1,string]+".mdl")
+    holoModel(17,"models/sprops/misc/alphanum/alphanum_"+I7:explode("")[2,string]+".mdl")
+    holoModel(18,"models/sprops/misc/alphanum/alphanum_"+I7:explode("")[3,string]+".mdl")
+    holoAlpha(16,255)
+    holoAlpha(18,255)
+    holoPos(16,entity():toWorld(vec(0.35*Size,(3.9-0.8)*Size,0.15)))
+    holoPos(17,entity():toWorld(vec(0.35*Size,(3.9)*Size,0.15)))
+    holoPos(18,entity():toWorld(vec(0.35*Size,(3.9+0.8)*Size,0.15)))
+}elseif(Right>=10){
+    holoModel(16,"models/sprops/misc/alphanum/alphanum_"+I7:explode("")[1,string]+".mdl")
+    holoModel(17,"models/sprops/misc/alphanum/alphanum_"+I7:explode("")[2,string]+".mdl")
+    holoAlpha(17,255)
+    holoAlpha(18,0)
+    holoPos(17,entity():toWorld(vec(0.35*Size,(3.9+0.4)*Size,0.15)))
+    holoPos(16,entity():toWorld(vec(0.35*Size,(3.9-0.4)*Size,0.15)))
+}else{
+    holoModel(16,"models/sprops/misc/alphanum/alphanum_"+I7:explode("")[1,string]+".mdl")
+    holoAlpha(17,0)
+    holoAlpha(18,0)
+    holoPos(16,entity():toWorld(vec(0.35*Size,(3.9)*Size,0.15)))
+}
