@@ -369,7 +369,7 @@ if (first()) {
     timer("update",500)
 }elseif (clk("update")) {
     #-- sim
-    timer("update",50)
+    timer("update",60)
     
     if(changed(Seat:driver():keyWalk())&Seat:driver():keyWalk()){
         if(!Aim){
