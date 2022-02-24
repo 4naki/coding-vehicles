@@ -124,10 +124,10 @@ if (first()) {
     RL_stepz = 0.25
     RR_stepz = 0.25
 
-    FL_p_foot = vec(65,35,0)
-    FR_p_foot = vec(65,-35,0)
-    RL_p_foot = vec(-65,30,0)
-    RR_p_foot = vec(-65,-30,0)
+    FL_p_foot = vec(65,40,0)
+    FR_p_foot = vec(65,-40,0)
+    RL_p_foot = vec(-65,35,0)
+    RR_p_foot = vec(-65,-35,0)
 
     FL_p_last = FL_p_next = FL_p_real = entity():toWorld(FL_p_foot)
     FR_p_last = FR_p_next = FR_p_real = entity():toWorld(FR_p_foot)
