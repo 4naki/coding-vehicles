@@ -24,7 +24,7 @@
 @persist ThirdPerson [AimPos ThirdPersonPos FirstPersonPos]:vector AimDistance ThirdPersonDistance FirstPersonDistance
 
 @trigger none
-#-- by shadowscion
+#-- main base by shadowscion
 
 
 if (first()) {
