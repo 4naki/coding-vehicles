@@ -1,6 +1,6 @@
 @name 4 legged animal mech spawn
 @inputs Base:entity Seat:entity CamAng:angle CamAng2:angle W2 A2 S2 D2 Sprint2 Gun:entity AmmoBox:entity
-@outputs CamPos:vector CamDistance Active Fire
+@outputs CamPos:vector CamDistance Active Fire RightPitch LeftPitch Pitch RightRoll LeftRoll Roll Height_Adj2
 
 #-- front legs bones
 @inputs [Thigh_F_R Thigh_F_L Leg_F_R Leg_F_L Calf_F_R Calf_F_L Foot_F_R Foot_F_L]:entity
@@ -134,10 +134,12 @@ if (first()) {
     RL_p_last = RL_p_next = RL_p_real = entity():toWorld(RL_p_foot)
     RR_p_last = RR_p_next = RR_p_real = entity():toWorld(RR_p_foot)
 
+    BonesVisible = 0
+
     for (I = 1,5) {
         holoCreate(I)
         holoModel(I,"models/sprops/misc/axis_plane.mdl")
-        holoAlpha(I,0)
+        holoAlpha(I,BonesVisible)
     }
 
     FL_ent = holoEntity(1)
@@ -148,8 +150,6 @@ if (first()) {
     #-- core variables
     Down = vec(0,0,-1)
     Left = vec(0,1,0)
-    
-    BonesVisible = 1
     
     #front right
     
@@ -442,37 +442,41 @@ if (first()) {
     Mech_ang = Base:toWorld(ang(0,0,0))
     Mech_vel = Mech_ang:forward()*min(Dir:length(),Mech_speed)*StepDistance
     
-    local PitchRight = (holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(14):pos():distance(holoEntity(17):pos()))
-    local PitchLeft = (holoEntity(18):pos():distance(holoEntity(25):pos())-holoEntity(10):pos():distance(holoEntity(24):pos()))
+    PitchRight = (holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(14):pos():distance(holoEntity(17):pos()))
+    PitchLeft = (holoEntity(18):pos():distance(holoEntity(25):pos())-holoEntity(10):pos():distance(holoEntity(24):pos()))
     
-    local Pitch = clamp((PitchRight-PitchLeft)*0.1,-35,35)-12
+    Pitch = clamp((PitchRight-PitchLeft)*0.05,-45,45)-6
     
-    local RollFront = -(holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(10):pos():distance(holoEntity(23):pos()))
+    RollFront = -(holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(10):pos():distance(holoEntity(23):pos()))
     
-    local RollBack = (holoEntity(14):pos():distance(holoEntity(17):pos())-holoEntity(18):pos():distance(holoEntity(25):pos()))
+    RollBack = (holoEntity(14):pos():distance(holoEntity(17):pos())-holoEntity(18):pos():distance(holoEntity(25):pos()))
     
-    local Roll = clamp(-(RollFront-RollBack)*0.1,-35,35)
+    Roll = clamp(-(RollFront-RollBack)*0.05,-45,45)
     
-    local LegsDistance = ((holoEntity(6):pos():distance(holoEntity(10):pos())+holoEntity(14):pos():distance(holoEntity(18):pos())+holoEntity(6):pos():distance(holoEntity(14):pos())+holoEntity(18):pos():distance(holoEntity(10):pos()))/4)*0.01
+    LegsDistance = ((holoEntity(6):pos():distance(holoEntity(10):pos())+holoEntity(14):pos():distance(holoEntity(18):pos())+holoEntity(6):pos():distance(holoEntity(14):pos())+holoEntity(18):pos():distance(holoEntity(10):pos()))/4)*0.01
     
-    local Ground_Ranger = rangerOffset((Mech_height*1.5)/(1+(Aim*AimHeight)+(LegsDistance*0.5)), Base:pos(), vec(0, 0, -1))
+    Ground_Ranger = rangerOffset((Mech_height*1.5)/(1+(Aim*AimHeight)+(LegsDistance*0.5)), Base:pos(), vec(0, 0, -1))
     
     On_Ground = Ground_Ranger:hit()
     
-    Base:applyAngForce(((Base:toLocal(ang(0,(CamAng:yaw()),0))*2000) * Aim) + (ang((clamp(CamAng:pitch(),-35,25)*(200 + (abs(CamAng:pitch())*1.5)))*Aim, clamp(1500-(Base:vel():length()*0.3),800,1500) * (( A - D )*!Aim), 0) + Base:toLocal(ang(Pitch, Base:angles():yaw(), Roll) + ang(0,0,clamp(Base:velL():y()*0.1,-45,45)))*300 - Base:angVel()*20 - ang(Base:angVel():pitch(),0,Base:angVel():roll())*10) * Inertia)
+    PitchTotal = ((FR_a_real:pitch()+FL_a_real:pitch())-(RR_a_real:pitch()+RL_a_real:pitch()))*0.5
+    RollTotal = ((FR_a_real:roll()+FL_a_real:roll())-(RR_a_real:roll()+RL_a_real:roll()))*0.5
     
+    Base:applyAngForce(((Base:toLocal(ang(0,(CamAng:yaw()),0)) * 2000) * Aim) + (ang((clamp(CamAng:pitch(),-35,25) * (200 + (abs(CamAng:pitch()) * 1.5))) * Aim, clamp(1500-(Base:vel():length()*0.3),800,1500) * (( A - D ) * !Aim), 0) + Base:toLocal(ang((Pitch*1.5) + (PitchTotal * 0.1), Base:angles():yaw(), (Roll*1.5) + (RollTotal * 0.1)) + ang(0,0,clamp(Base:velL():y()*0.1,-45,45)))*350 - Base:angVel()*20 - ang(Base:angVel():pitch(),0,Base:angVel():roll())*10) * Inertia)
     
-    Height_Adj=Mech_height/(1+(Aim*0.4))
+    Height_Adj2 = (((abs(Pitch)+abs(Roll))/2)-1.845)*0.01
+    
+    Height_Adj = Mech_height/(1+(Aim*0.2)+Height_Adj2)
     
     local Distance=Ground_Ranger:distance()
     
     local Movement_Direction=(((Base:forward()*(W-S)))*vec(1,1,0)):normalized()*On_Ground
     
     if(On_Ground){
-        local Stand_Force=(vec(0,0,((Height_Adj)*1)-Distance)*4)
+        local Stand_Force=vec(0,0,((Height_Adj)*1)-Distance)*4
         local Damping_Force=(-Base:vel()*0.2)
         local Move_Force=((Movement_Direction)*(55/(1+Aim)))*(1+(Sprint*2.5))*0.5
-        Base:applyForce((Stand_Force+Damping_Force+Move_Force)*Mass)
+        Base:applyForce((Base:up()*Stand_Force*Mass)+(Damping_Force+Move_Force)*Mass)
     }
     if(changed(On_Ground)){
         Base:propGravity(!On_Ground)
