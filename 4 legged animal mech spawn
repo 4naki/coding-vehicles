@@ -369,7 +369,7 @@ if (first()) {
     timer("update",500)
 }elseif (clk("update")) {
     #-- sim
-    timer("update",80)
+    timer("update",50)
     
     if(changed(Seat:driver():keyWalk())&Seat:driver():keyWalk()){
         if(!Aim){
@@ -442,39 +442,37 @@ if (first()) {
     Mech_ang = Base:toWorld(ang(0,0,0))
     Mech_vel = Mech_ang:forward()*min(Dir:length(),Mech_speed)*StepDistance
     
-    local Ranger = rangerOffset((Mech_height+10)/(1+(Aim*AimHeight)), Base:pos(), vec(0, 0, -1))
+    local Ground_Ranger = rangerOffset((Mech_height*1.5)/(1+(Aim*AimHeight)), Base:pos(), vec(0, 0, -1))
     
-    On_Ground = Ranger:hit()
+    On_Ground = Ground_Ranger:hit()
+    PitchRight = holoEntity(6):toLocal(holoEntity(22):pos()):x()*0.05
+    PitchLeft = holoEntity(10):toLocal(holoEntity(23):pos()):x()*0.05
     
-    if(Ranger:hit()){
-        
-        Base:propGravity(0)
-        
-        PitchRight = holoEntity(6):toLocal(holoEntity(22):pos()):x()*0.05
-        PitchLeft = holoEntity(10):toLocal(holoEntity(23):pos()):x()*0.05
-        
-        Pitch = clamp((PitchRight+PitchLeft/2),-8,8)-2
-        
-        Base:applyAngForce(((Base:toLocal(ang(0,(CamAng:yaw()),0))*2000) * Aim) + (ang((clamp(CamAng:pitch(),-35,25)*(200+(abs(CamAng:pitch())*1.5)))*Aim, clamp(1500-(Base:vel():length()*0.3),800,1500) * (( A - D )*!Aim), 0) + Base:toLocal(ang(Pitch, Base:angles():yaw(), 0)+ang(0,0,clamp(Base:velL():y()*0.1,-45,45)))*300 - Base:angVel()*20) * Inertia)
-        
-        local Height = vec(0, 0, Mech_height/(1+(Aim*AimHeight)) - Ranger:distance()) * 1
-        local Forward = Base:forward() * ( W - S ) * (( 8 + ( 16 * Sprint ) )/(1+(S*2)))
-        local Strafe = -Base:right() * ( A - D ) * (clamp(abs(Base:velL():y())*0.1,0,6))
-        
-        local Damping = vec(5, 5, 1)
+    Pitch = clamp((PitchRight+PitchLeft/2),-8,8)-2
     
-        Base:applyForce(((Forward + Strafe + Height)*5 - Base:vel() / Damping) * Mass)
+    Base:applyAngForce(((Base:toLocal(ang(0,(CamAng:yaw()),0))*2000) * Aim) + (ang((clamp(CamAng:pitch(),-35,25)*(200+(abs(CamAng:pitch())*1.5)))*Aim, clamp(1500-(Base:vel():length()*0.3),800,1500) * (( A - D )*!Aim), 0) + Base:toLocal(ang(Pitch, Base:angles():yaw(), 0)+ang(0,0,clamp(Base:velL():y()*0.1,-45,45)))*300 - Base:angVel()*20) * Inertia)
+    
+    
+    Height_Adj=Mech_height/(1+(Aim*0.4))
+    
+    local Distance=Ground_Ranger:distance()
+    
+    local Movement_Direction=(((Base:forward()*(W-S)))*vec(1,1,0)):normalized()*On_Ground
+    
+    if(On_Ground){
+        local Stand_Force=(vec(0,0,((Height_Adj)*1)-Distance)*4)
+        local Damping_Force=(-Base:vel()*0.5)
+        local Move_Force=((Movement_Direction)*(80/(1+Aim)))*(1+(Sprint*2))
+        Base:applyForce((Stand_Force+Damping_Force+Move_Force)*Mass)
     }
-    
-    else{
-        Base:propGravity(1)
+    if(changed(On_Ground)){
+        Base:propGravity(!On_Ground)
     }
+    digi_ik(Base, 6, 7, 8, 9, 22, FSegmentLengthA, FSegmentLengthB, FSegmentLengthC, holoEntity(6), holoEntity(2):pos(),On_Ground)
+    digi_ik(Base, 10, 11, 12, 13, 23, FSegmentLengthA, FSegmentLengthB, FSegmentLengthC, holoEntity(10), holoEntity(1):pos(),On_Ground)
     
-    digi_ik(6, 7, 8, 9, 22, FSegmentLengthA, FSegmentLengthB, FSegmentLengthC, holoEntity(6), holoEntity(2):pos(),On_Ground)
-    digi_ik(10, 11, 12, 13, 23, FSegmentLengthA, FSegmentLengthB, FSegmentLengthC, holoEntity(10), holoEntity(1):pos(),On_Ground)
-    
-    digi_ik(14, 15, 16, 17, 24,BSegmentLengthA, BSegmentLengthB, BSegmentLengthC, holoEntity(14), holoEntity(4):pos(),On_Ground)
-    digi_ik(18, 19, 20, 21, 25,BSegmentLengthA, BSegmentLengthB, BSegmentLengthC, holoEntity(18), holoEntity(3):pos(),On_Ground)
+    digi_ik(Base, 14, 15, 16, 17, 24,BSegmentLengthA, BSegmentLengthB, BSegmentLengthC, holoEntity(14), holoEntity(4):pos(),On_Ground)
+    digi_ik(Base, 18, 19, 20, 21, 25,BSegmentLengthA, BSegmentLengthB, BSegmentLengthC, holoEntity(18), holoEntity(3):pos(),On_Ground)
     
     Time_delta = curtime() - Time_current
     Time_current = curtime()
