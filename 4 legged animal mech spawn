@@ -87,14 +87,14 @@ if (first()) {
     
     Mech_gaits = table(
         "walk" = array(
-            0.8,95,   #cycle rate,speed
+            0.6,92,   #cycle rate,speed
             0.00,0.55, #fl start,length
             0.50,0.55, #fr start,length
             0.25,0.55, #rl start,length
             0.75,0.55  #rr start,length
         ),
         "gallop" = array(
-            1.6,115,
+            1.35,115,
             0.00,0.75,
             0.10,0.75,
             0.50,0.75,
@@ -459,9 +459,7 @@ if (first()) {
     
     On_Ground = Ground_Ranger:hit()
     
-    Base:applyAngForce(((Base:toLocal(ang(0,(CamAng:yaw()),0))*2000) * Aim) + (ang((clamp(CamAng:pitch(),-35,25)*(200 + 
-    (abs(CamAng:pitch())*1.5)))*Aim, clamp(1500-(Base:vel():length()*0.3),800,1500) * (( A - D )*!Aim), 0) + 
-    Base:toLocal(ang(Pitch, Base:angles():yaw(), Roll) + ang(0,0,clamp(Base:velL():y()*0.1,-45,45)))*300 - Base:angVel()*20 - ang(Base:angVel():pitch(),0,Base:angVel():roll())*10) * Inertia)
+    Base:applyAngForce(((Base:toLocal(ang(0,(CamAng:yaw()),0))*2000) * Aim) + (ang((clamp(CamAng:pitch(),-35,25)*(200 + (abs(CamAng:pitch())*1.5)))*Aim, clamp(1500-(Base:vel():length()*0.3),800,1500) * (( A - D )*!Aim), 0) + Base:toLocal(ang(Pitch, Base:angles():yaw(), Roll) + ang(0,0,clamp(Base:velL():y()*0.1,-45,45)))*300 - Base:angVel()*20 - ang(Base:angVel():pitch(),0,Base:angVel():roll())*10) * Inertia)
     
     
     Height_Adj=Mech_height/(1+(Aim*0.4))
@@ -473,7 +471,7 @@ if (first()) {
     if(On_Ground){
         local Stand_Force=(vec(0,0,((Height_Adj)*1)-Distance)*4)
         local Damping_Force=(-Base:vel()*0.2)
-        local Move_Force=((Movement_Direction)*(80/(1+Aim)))*(1+(Sprint*2))*0.5
+        local Move_Force=((Movement_Direction)*(55/(1+Aim)))*(1+(Sprint*2.5))*0.5
         Base:applyForce((Stand_Force+Damping_Force+Move_Force)*Mass)
     }
     if(changed(On_Ground)){
