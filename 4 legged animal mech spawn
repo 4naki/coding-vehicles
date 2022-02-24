@@ -442,15 +442,26 @@ if (first()) {
     Mech_ang = Base:toWorld(ang(0,0,0))
     Mech_vel = Mech_ang:forward()*min(Dir:length(),Mech_speed)*StepDistance
     
-    local Ground_Ranger = rangerOffset((Mech_height*1.5)/(1+(Aim*AimHeight)), Base:pos(), vec(0, 0, -1))
+    PitchRight = (holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(14):pos():distance(holoEntity(17):pos()))
+    PitchLeft = (holoEntity(18):pos():distance(holoEntity(25):pos())-holoEntity(10):pos():distance(holoEntity(24):pos()))
+    
+    Pitch = clamp((PitchRight-PitchLeft)*0.1,-35,35)-12
+    
+    RollFront = -(holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(10):pos():distance(holoEntity(23):pos()))
+    
+    RollBack = (holoEntity(14):pos():distance(holoEntity(17):pos())-holoEntity(18):pos():distance(holoEntity(25):pos()))
+    
+    Roll = clamp(-(RollFront-RollBack)*0.1,-35,35)
+    
+    LegsDistance = ((holoEntity(6):pos():distance(holoEntity(10):pos())+holoEntity(14):pos():distance(holoEntity(18):pos())+holoEntity(6):pos():distance(holoEntity(14):pos())+holoEntity(18):pos():distance(holoEntity(10):pos()))/4)*0.01
+    
+    local Ground_Ranger = rangerOffset((Mech_height*1.5)/(1+(Aim*AimHeight)+(LegsDistance*0.5)), Base:pos(), vec(0, 0, -1))
     
     On_Ground = Ground_Ranger:hit()
-    PitchRight = holoEntity(6):toLocal(holoEntity(22):pos()):x()*0.05
-    PitchLeft = holoEntity(10):toLocal(holoEntity(23):pos()):x()*0.05
     
-    Pitch = clamp((PitchRight+PitchLeft/2),-8,8)-2
-    
-    Base:applyAngForce(((Base:toLocal(ang(0,(CamAng:yaw()),0))*2000) * Aim) + (ang((clamp(CamAng:pitch(),-35,25)*(200+(abs(CamAng:pitch())*1.5)))*Aim, clamp(1500-(Base:vel():length()*0.3),800,1500) * (( A - D )*!Aim), 0) + Base:toLocal(ang(Pitch, Base:angles():yaw(), 0)+ang(0,0,clamp(Base:velL():y()*0.1,-45,45)))*300 - Base:angVel()*20) * Inertia)
+    Base:applyAngForce(((Base:toLocal(ang(0,(CamAng:yaw()),0))*2000) * Aim) + (ang((clamp(CamAng:pitch(),-35,25)*(200 + 
+    (abs(CamAng:pitch())*1.5)))*Aim, clamp(1500-(Base:vel():length()*0.3),800,1500) * (( A - D )*!Aim), 0) + 
+    Base:toLocal(ang(Pitch, Base:angles():yaw(), Roll) + ang(0,0,clamp(Base:velL():y()*0.1,-45,45)))*300 - Base:angVel()*20 - ang(Base:angVel():pitch(),0,Base:angVel():roll())*10) * Inertia)
     
     
     Height_Adj=Mech_height/(1+(Aim*0.4))
@@ -461,8 +472,8 @@ if (first()) {
     
     if(On_Ground){
         local Stand_Force=(vec(0,0,((Height_Adj)*1)-Distance)*4)
-        local Damping_Force=(-Base:vel()*0.5)
-        local Move_Force=((Movement_Direction)*(80/(1+Aim)))*(1+(Sprint*2))
+        local Damping_Force=(-Base:vel()*0.2)
+        local Move_Force=((Movement_Direction)*(80/(1+Aim)))*(1+(Sprint*2))*0.5
         Base:applyForce((Stand_Force+Damping_Force+Move_Force)*Mass)
     }
     if(changed(On_Ground)){
