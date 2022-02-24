@@ -442,18 +442,18 @@ if (first()) {
     Mech_ang = Base:toWorld(ang(0,0,0))
     Mech_vel = Mech_ang:forward()*min(Dir:length(),Mech_speed)*StepDistance
     
-    PitchRight = (holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(14):pos():distance(holoEntity(17):pos()))
-    PitchLeft = (holoEntity(18):pos():distance(holoEntity(25):pos())-holoEntity(10):pos():distance(holoEntity(24):pos()))
+    local PitchRight = (holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(14):pos():distance(holoEntity(17):pos()))
+    local PitchLeft = (holoEntity(18):pos():distance(holoEntity(25):pos())-holoEntity(10):pos():distance(holoEntity(24):pos()))
     
-    Pitch = clamp((PitchRight-PitchLeft)*0.1,-35,35)-12
+    local Pitch = clamp((PitchRight-PitchLeft)*0.1,-35,35)-12
     
-    RollFront = -(holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(10):pos():distance(holoEntity(23):pos()))
+    local RollFront = -(holoEntity(6):pos():distance(holoEntity(22):pos())-holoEntity(10):pos():distance(holoEntity(23):pos()))
     
-    RollBack = (holoEntity(14):pos():distance(holoEntity(17):pos())-holoEntity(18):pos():distance(holoEntity(25):pos()))
+    local RollBack = (holoEntity(14):pos():distance(holoEntity(17):pos())-holoEntity(18):pos():distance(holoEntity(25):pos()))
     
-    Roll = clamp(-(RollFront-RollBack)*0.1,-35,35)
+    local Roll = clamp(-(RollFront-RollBack)*0.1,-35,35)
     
-    LegsDistance = ((holoEntity(6):pos():distance(holoEntity(10):pos())+holoEntity(14):pos():distance(holoEntity(18):pos())+holoEntity(6):pos():distance(holoEntity(14):pos())+holoEntity(18):pos():distance(holoEntity(10):pos()))/4)*0.01
+    local LegsDistance = ((holoEntity(6):pos():distance(holoEntity(10):pos())+holoEntity(14):pos():distance(holoEntity(18):pos())+holoEntity(6):pos():distance(holoEntity(14):pos())+holoEntity(18):pos():distance(holoEntity(10):pos()))/4)*0.01
     
     local Ground_Ranger = rangerOffset((Mech_height*1.5)/(1+(Aim*AimHeight)+(LegsDistance*0.5)), Base:pos(), vec(0, 0, -1))
     
