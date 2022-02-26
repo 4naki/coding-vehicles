@@ -501,7 +501,7 @@ if (first()) {
         BouncingMovement-=0.1
     }
     
-    BounceFinal = clamp((abs(BouncingMovement*0.5))*(Dir:length()*0.3),0,5)*0.8
+    BounceFinal = clamp((abs(BouncingMovement*0.5))*((Dir:length()*0.3)+(abs(Base:angVel():yaw())*0.3)),0,5)*0.8
     
     Height_Adj = Mech_height/1+BounceFinal
     
