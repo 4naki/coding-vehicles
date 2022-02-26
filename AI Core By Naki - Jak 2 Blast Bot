@@ -3,12 +3,12 @@
 @inputs Entity:entity Gun:entity AimPos:vector
 @outputs W A S D Shift Mouse1 Space EyeAngles:angle Aim
 @persist RefreshRate Entity:entity Target:entity TargetPos:vector Follow Here SetTarget TargetEntity Attack Aim UseAimPos TargetOverwrite:vector TargetOverwrite2:vector
-@persist StopDistance AimRadius AimRange TooClose CamControllerMode Mouse2Aim HeightLimit CanJump
+@persist StopDistance AimRadius AimRange TooClose CamControllerMode Mouse2Aim HeightLimit CanJump Distance2 Distance
 @trigger none
 
 
 #debug
-@outputs TargetOverwrite:vector TargetOverwrite2:vector Target:entity
+@outputs TargetOverwrite:vector TargetOverwrite2:vector Target:entity Distance2 Distance
 runOnChat(1)
 runOnKeys(owner(),1)
 if(first()){
@@ -127,10 +127,10 @@ if(Follow){
     Move=0
 }
 
-if((Distance>StopDistance)|(Distance2>StopDistance)){
+if((Distance>StopDistance)&(Distance2>StopDistance)){
     W=1*Move
     S=0
-}elseif((Distance<TooClose)|(Distance2<TooClose)){
+}elseif((Distance<TooClose)&(Distance2<TooClose)){
     Here=0
     W=0
     S=1*Move
