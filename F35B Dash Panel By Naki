@@ -1,0 +1,509 @@
+@name F35B Dash Panel By Naki
+@inputs Base:entity ScreenRight:wirelink ScreenLeft:wirelink Throttle VTOLVal Temp
+@persist W H TopWidth TopHeight AngOffset TempMax
+
+if(first()){
+    
+    ScreenRight:egpClear()
+    ScreenLeft:egpClear()
+    
+    W = 512
+    H = 512
+    
+    TopWidth = 128
+    TopHeight = -50
+    
+    ScreenLeft:egpBox(18,vec2(0+TopWidth+W/2,0+TopHeight+H/2),vec2(0))
+    
+    Dist = 125
+    
+    local Val = 0
+    
+    ScreenLeft:egpLine(19,vec2(50,(Dist*Val)),vec2(20,(Dist*Val)))
+    ScreenLeft:egpColor(19,vec(255,255,175))
+    
+    ScreenLeft:egpLine(20,vec2(-50,(Dist*Val)),vec2(-20,(Dist*Val)))
+    ScreenLeft:egpColor(20,vec(255,255,175))
+    
+    ScreenLeft:egpLine(21,vec2(-50,(Dist*Val)),vec2(-50,15+(Dist*Val)))
+    ScreenLeft:egpColor(21,vec(255,255,175))
+    
+    ScreenLeft:egpLine(22,vec2(50,(Dist*Val)),vec2(50,15+(Dist*Val)))
+    ScreenLeft:egpColor(22,vec(255,255,175))
+    
+    ScreenLeft:egpText(39,"0",vec2(-45,(Dist*Val)))
+    ScreenLeft:egpColor(39,vec(255,255,175))
+    
+    local Val = 1
+    
+    ScreenLeft:egpLine(23,vec2(50,(Dist*Val)),vec2(20,(Dist*Val)))
+    ScreenLeft:egpColor(23,vec(255,255,175))
+    
+    ScreenLeft:egpLine(24,vec2(-50,(Dist*Val)),vec2(-20,(Dist*Val)))
+    ScreenLeft:egpColor(24,vec(255,255,175))
+    
+    ScreenLeft:egpLine(25,vec2(-50,(Dist*Val)),vec2(-50,15+(Dist*Val)))
+    ScreenLeft:egpColor(25,vec(255,255,175))
+    
+    ScreenLeft:egpLine(26,vec2(50,(Dist*Val)),vec2(50,15+(Dist*Val)))
+    ScreenLeft:egpColor(26,vec(255,255,175))
+    
+    ScreenLeft:egpText(40,"-45",vec2(-45,(Dist*Val)))
+    ScreenLeft:egpColor(40,vec(255,255,175))
+    
+    local Val = 2
+    
+    ScreenLeft:egpLine(27,vec2(50,(Dist*Val)),vec2(20,(Dist*Val)))
+    ScreenLeft:egpColor(27,vec(255,255,175))
+    
+    ScreenLeft:egpLine(28,vec2(-50,(Dist*Val)),vec2(-20,(Dist*Val)))
+    ScreenLeft:egpColor(28,vec(255,255,175))
+    
+    ScreenLeft:egpLine(29,vec2(-50,(Dist*Val)),vec2(-50,15+(Dist*Val)))
+    ScreenLeft:egpColor(29,vec(255,255,175))
+    
+    ScreenLeft:egpLine(30,vec2(50,(Dist*Val)),vec2(50,15+(Dist*Val)))
+    ScreenLeft:egpColor(30,vec(255,255,175))
+    
+    ScreenLeft:egpText(41,"-90",vec2(-45,(Dist*Val)))
+    ScreenLeft:egpColor(41,vec(255,255,175))
+    
+    local Val = -1
+    
+    ScreenLeft:egpLine(31,vec2(50,(Dist*Val)),vec2(20,(Dist*Val)))
+    ScreenLeft:egpColor(31,vec(255,255,175))
+    
+    ScreenLeft:egpLine(32,vec2(-50,(Dist*Val)),vec2(-20,(Dist*Val)))
+    ScreenLeft:egpColor(32,vec(255,255,175))
+    
+    ScreenLeft:egpLine(33,vec2(-50,(Dist*Val)),vec2(-50,15+(Dist*Val)))
+    ScreenLeft:egpColor(33,vec(255,255,175))
+    
+    ScreenLeft:egpLine(34,vec2(50,(Dist*Val)),vec2(50,15+(Dist*Val)))
+    ScreenLeft:egpColor(34,vec(255,255,175))
+    
+    ScreenLeft:egpText(42,"45",vec2(-45,(Dist*Val)))
+    ScreenLeft:egpColor(42,vec(255,255,175))
+    
+    local Val = -2
+    
+    ScreenLeft:egpLine(35,vec2(50,(Dist*Val)),vec2(20,(Dist*Val)))
+    ScreenLeft:egpColor(35,vec(255,255,175))
+    
+    ScreenLeft:egpLine(36,vec2(-50,(Dist*Val)),vec2(-20,(Dist*Val)))
+    ScreenLeft:egpColor(36,vec(255,255,175))
+    
+    ScreenLeft:egpLine(37,vec2(-50,(Dist*Val)),vec2(-50,15+(Dist*Val)))
+    ScreenLeft:egpColor(37,vec(255,255,175))
+    
+    ScreenLeft:egpLine(38,vec2(50,(Dist*Val)),vec2(50,15+(Dist*Val)))
+    ScreenLeft:egpColor(38,vec(255,255,175))
+    
+    ScreenLeft:egpText(43,"90",vec2(-45,(Dist*Val)))
+    ScreenLeft:egpColor(43,vec(255,255,175))
+    
+    for(I = 19, 43){
+        ScreenLeft:egpParent(I,18)
+    }
+    
+    ScreenLeft:egpBox(44,vec2(0+W/2,250+H/2),vec2(500,320))
+    ScreenLeft:egpColor(44,vec(0))
+    
+    ScreenLeft:egpBox(45,vec2(0+W/2,-350+H/2),vec2(500,320))
+    ScreenLeft:egpColor(45,vec(0))
+    
+    ScreenRight:egpBox(46,vec2(0+W/2,250+H/2),vec2(500,320))
+    ScreenRight:egpColor(46,vec(0))
+    
+    ScreenRight:egpBox(47,vec2(0+W/2,-350+H/2),vec2(500,320))
+    ScreenRight:egpColor(47,vec(0))
+    
+    #base
+    
+    ScreenRight:egpLine(1,vec2(250+W/2,-190+H/2),vec2(-250+W/2,-190+H/2))
+    ScreenRight:egpSize(1,2)
+    
+    ScreenRight:egpLine(2,vec2(250+W/2,190+H/2),vec2(-250+W/2,190+H/2))
+    ScreenRight:egpSize(2,2)
+    
+    ScreenRight:egpLine(3,vec2(250+W/2,90+H/2),vec2(-250+W/2,90+H/2))
+    ScreenRight:egpSize(3,2)
+    
+    ScreenRight:egpLine(4,vec2(0+W/2,190+H/2),vec2(0+W/2,-190+H/2))
+    ScreenRight:egpSize(4,2)
+    
+    ScreenRight:egpLine(5,vec2(128+W/2,190+H/2),vec2(128+W/2,90+H/2))
+    ScreenRight:egpSize(5,2)
+    
+    ScreenRight:egpLine(6,vec2(-128+W/2,190+H/2),vec2(-128+W/2,90+H/2))
+    ScreenRight:egpSize(6,2)
+    
+    
+    ScreenLeft:egpLine(1,vec2(250+W/2,-190+H/2),vec2(-250+W/2,-190+H/2))
+    ScreenLeft:egpSize(1,2)
+    
+    ScreenLeft:egpLine(2,vec2(250+W/2,190+H/2),vec2(-250+W/2,190+H/2))
+    ScreenLeft:egpSize(2,2)
+    
+    ScreenLeft:egpLine(3,vec2(250+W/2,90+H/2),vec2(-250+W/2,90+H/2))
+    ScreenLeft:egpSize(3,2)
+    
+    ScreenLeft:egpLine(4,vec2(0+W/2,190+H/2),vec2(0+W/2,-190+H/2))
+    ScreenLeft:egpSize(4,2)
+    
+    ScreenLeft:egpLine(5,vec2(128+W/2,190+H/2),vec2(128+W/2,90+H/2))
+    ScreenLeft:egpSize(5,2)
+    
+    ScreenLeft:egpLine(6,vec2(-128+W/2,190+H/2),vec2(-128+W/2,90+H/2))
+    ScreenLeft:egpSize(6,2)
+    
+    
+    #compass
+    
+    ScreenRight:egpBox(7,vec2(0+TopWidth+W/2,0+TopHeight+H/2),vec2(0))
+    
+    ScreenRight:egpLine(8,vec2(100,0),vec2(95,0))
+    ScreenRight:egpLine(9,vec2(-100,0),vec2(-95,0))
+    ScreenRight:egpLine(10,vec2(0,100),vec2(0,95))
+    ScreenRight:egpLine(11,vec2(0,-100),vec2(0,-95))
+    
+    ScreenRight:egpLine(12,vec2(70,-70),vec2(55,-55))
+    ScreenRight:egpLine(13,vec2(70,70),vec2(55,55))
+    ScreenRight:egpLine(14,vec2(-70,-70),vec2(-55,-55))
+    ScreenRight:egpLine(15,vec2(-70,70),vec2(-55,55))
+    
+    ScreenRight:egpText(16,"N",vec2(5,95))
+    ScreenRight:egpText(17,"E",vec2(-95,3))
+    ScreenRight:egpText(18,"S",vec2(-3,-95))
+    ScreenRight:egpText(19,"W",vec2(95,-8))
+    
+    ScreenRight:egpAngle(16,180)
+    ScreenRight:egpAngle(17,-90)
+    ScreenRight:egpAngle(18,0)
+    ScreenRight:egpAngle(19,90)
+    
+    for(I=8,19){
+        ScreenRight:egpParent(I,7)
+    }
+    
+    ScreenRight:egpLine(20,vec2(0+TopWidth+W/2,-11+TopHeight+H/2),vec2(-3+TopWidth+W/2,-2+TopHeight+H/2))
+    ScreenRight:egpLine(21,vec2(0+TopWidth+W/2,-11+TopHeight+H/2),vec2(3+TopWidth+W/2,-2+TopHeight+H/2))
+    
+    ScreenRight:egpLine(22,vec2(-3+TopWidth+W/2,-2+TopHeight+H/2),vec2(-8+TopWidth+W/2,0+TopHeight+H/2))
+    ScreenRight:egpLine(23,vec2(3+TopWidth+W/2,-2+TopHeight+H/2),vec2(8+TopWidth+W/2,0+TopHeight+H/2))
+    
+    ScreenRight:egpLine(24,vec2(-8+TopWidth+W/2,0+TopHeight+H/2),vec2(-9+TopWidth+W/2,3+TopHeight+H/2))
+    ScreenRight:egpLine(25,vec2(8+TopWidth+W/2,0+TopHeight+H/2),vec2(9+TopWidth+W/2,3+TopHeight+H/2))
+    
+    ScreenRight:egpLine(26,vec2(-9+TopWidth+W/2,3+TopHeight+H/2),vec2(-3+TopWidth+W/2,5+TopHeight+H/2))
+    ScreenRight:egpLine(27,vec2(9+TopWidth+W/2,3+TopHeight+H/2),vec2(3+TopWidth+W/2,5+TopHeight+H/2))
+    
+    ScreenRight:egpLine(28,vec2(-3+TopWidth+W/2,5+TopHeight+H/2),vec2(-6.5+TopWidth+W/2,9.5+TopHeight+H/2))
+    ScreenRight:egpLine(29,vec2(3+TopWidth+W/2,5+TopHeight+H/2),vec2(6.5+TopWidth+W/2,9.5+TopHeight+H/2))
+    
+    ScreenRight:egpLine(30,vec2(-6.5+TopWidth+W/2,9.5+TopHeight+H/2),vec2(-1.5+TopWidth+W/2,9.5+TopHeight+H/2))
+    ScreenRight:egpLine(31,vec2(6.5+TopWidth+W/2,9.5+TopHeight+H/2),vec2(1.5+TopWidth+W/2,9.5+TopHeight+H/2))
+    
+    ScreenRight:egpLine(32,vec2(-1.5+TopWidth+W/2,9.5+TopHeight+H/2),vec2(0+TopWidth+W/2,6+TopHeight+H/2))
+    ScreenRight:egpLine(33,vec2(1.5+TopWidth+W/2,9.5+TopHeight+H/2),vec2(0+TopWidth+W/2,6+TopHeight+H/2))
+    
+    ScreenRight:egpBoxOutline(34,vec2(0+TopWidth+W/2,-110+TopHeight+H/2),vec2(25,15))
+    
+    ScreenRight:egpText(36,"FCS",vec2(180+W/2,160+H/2))
+    ScreenRight:egpColor(36,vec(255,255,175))
+    
+    ScreenRight:egpText(37,"FCS",vec2(180-128+W/2,160+H/2))
+    ScreenRight:egpColor(37,vec(255,255,175))
+    
+    ScreenRight:egpText(38,"FCS",vec2(180-(128*2)+W/2,160+H/2))
+    ScreenRight:egpColor(38,vec(255,255,175))
+    
+    ScreenRight:egpText(39,"FUEL",vec2(180-(128*3)+W/2,160+H/2))
+    ScreenRight:egpColor(39,vec(255,255,175))
+    
+    #left
+    
+    ScreenLeft:egpText(7,"FCS",vec2(180+W/2,160+H/2))
+    ScreenLeft:egpColor(7,vec(255,255,175))
+    
+    ScreenLeft:egpText(8,"FUEL",vec2(180-128+W/2,160+H/2))
+    ScreenLeft:egpColor(8,vec(255,255,175))
+    
+    ScreenLeft:egpText(9,"FCS",vec2(180-(128*2)+W/2,160+H/2))
+    ScreenLeft:egpColor(9,vec(255,255,175))
+    
+    ScreenLeft:egpText(10,"HUD",vec2(180-(128*3)+W/2,160+H/2))
+    ScreenLeft:egpColor(10,vec(255,255,175))
+    
+    ScreenLeft:egpBox(11,vec2(0+TopWidth+W/2,0+TopHeight+H/2),vec2(0))
+    
+    ScreenLeft:egpLine(12,vec2(-125,-5),vec2(-10,-5))
+    ScreenLeft:egpColor(12,vec(255,255,175))
+    
+    ScreenLeft:egpLine(13,vec2(125,-5),vec2(10,-5))
+    ScreenLeft:egpColor(13,vec(255,255,175))
+    
+    for(I = 12, 13){
+        ScreenLeft:egpParent(I,11)
+    }
+    
+    ScreenLeft:egpCircleOutline(14,vec2(0+TopWidth+W/2,0+TopHeight+H/2),vec2(4))
+    ScreenLeft:egpColor(14,vec(255,255,175))
+    
+    ScreenLeft:egpLine(15,vec2(0+TopWidth+W/2,-4+TopHeight+H/2),vec2(0+TopWidth+W/2,-10+TopHeight+H/2))
+    ScreenLeft:egpColor(15,vec(255,255,175))
+    
+    ScreenLeft:egpLine(16,vec2(-4+TopWidth+W/2,0+TopHeight+H/2),vec2(-9+TopWidth+W/2,0+TopHeight+H/2))
+    ScreenLeft:egpColor(16,vec(255,255,175))
+    
+    ScreenLeft:egpLine(17,vec2(4+TopWidth+W/2,0+TopHeight+H/2),vec2(9+TopWidth+W/2,0+TopHeight+H/2))
+    ScreenLeft:egpColor(17,vec(255,255,175))
+    
+    ScreenLeft:egpCircleOutline(48,vec2(-85+TopWidth+W/2,-10+TopHeight+H/2),vec2(12))
+    ScreenLeft:egpColor(48,vec(255,255,175))
+    
+    ScreenLeft:egpCircleOutline(49,vec2(85+TopWidth+W/2,-10+TopHeight+H/2),vec2(15))
+    ScreenLeft:egpColor(49,vec(255,255,175))
+    
+    ScreenLeft:egpText(50,"",vec2())
+    ScreenLeft:egpColor(50,vec(255,255,175))
+    
+    ScreenLeft:egpText(51,"",vec2())
+    ScreenLeft:egpColor(51,vec(255,255,175))
+    
+    ScreenLeft:egpText(52,"",vec2())
+    ScreenLeft:egpColor(52,vec(255,255,175))
+    
+    ScreenLeft:egpText(53,"",vec2())
+    ScreenLeft:egpColor(53,vec(255,255,175))
+    
+    ScreenLeft:egpBoxOutline(54,vec2(-212+W/2,134+H/2),vec2(35,20))
+    ScreenLeft:egpColor(54,vec(255,255,175))
+    
+    ScreenLeft:egpBoxOutline(55,vec2((-(212+8)+64)+W/2,134+H/2),vec2(35,20))
+    ScreenLeft:egpColor(55,vec(255,255,175))
+    
+    Pos = vec(Base:pos():x(),Base:pos():y(),Base:pos():z()-randint(100,1000))
+    
+    ScreenLeft:egpCircleOutline(56,vec2(-72-TopWidth+W/2,-65+TopHeight+H/2),vec2(22))
+    
+    ScreenLeft:egpCircleOutline(57,vec2(-0-TopWidth+W/2,-65+TopHeight+H/2),vec2(22))
+    
+    ScreenLeft:egpCircleOutline(58,vec2(72-TopWidth+W/2,-65+TopHeight+H/2),vec2(22))
+    
+    ScreenLeft:egpCircleOutline(59,vec2(-0-TopWidth+W/2,60+TopHeight+H/2),vec2(22))
+    
+    ScreenLeft:egpCircleOutline(60,vec2(72-TopWidth+W/2,60+TopHeight+H/2),vec2(22))
+    
+    ScreenLeft:egpBoxOutline(61,vec2(-63-TopWidth+W/2,-10+65+TopHeight+H/2),vec2(40,18))
+    
+    ScreenLeft:egpBoxOutline(62,vec2(-63-TopWidth+W/2,10+65+TopHeight+H/2),vec2(40,18))
+    
+    ScreenLeft:egpText(63,"THRUST",vec2(-19-72-TopWidth+W/2,25-65+TopHeight+H/2))
+    ScreenLeft:egpSize(63,12)
+    
+    ScreenLeft:egpText(64,"EGT",vec2(-8-0-TopWidth+W/2,25-65+TopHeight+H/2))
+    ScreenLeft:egpSize(64,12)
+    
+    ScreenLeft:egpText(65,"NOZZLE",vec2(-17+72-TopWidth+W/2,25-65+TopHeight+H/2))
+    ScreenLeft:egpSize(65,12)
+    
+    ScreenLeft:egpText(66,"HYD A",vec2(-52-70-TopWidth+W/2,-17+65+TopHeight+H/2))
+    ScreenLeft:egpSize(66,12)
+    
+    ScreenLeft:egpText(67,"HYD B",vec2(-52-70-TopWidth+W/2,4+65+TopHeight+H/2))
+    ScreenLeft:egpSize(67,12)
+    
+    ScreenLeft:egpText(68,"4000",vec2(-5-70-TopWidth+W/2,-17+65+TopHeight+H/2))
+    ScreenLeft:egpSize(68,12)
+    
+    ScreenLeft:egpText(69,"4000",vec2(-5-70-TopWidth+W/2,4+65+TopHeight+H/2))
+    ScreenLeft:egpSize(69,12)
+    
+    
+    ScreenLeft:egpText(70,"NZ RFM",vec2(-19-0-TopWidth+W/2,25+60+TopHeight+H/2))
+    ScreenLeft:egpSize(70,12)
+    
+    ScreenLeft:egpText(71,"OIL",vec2(-8+72-TopWidth+W/2,25+60+TopHeight+H/2))
+    ScreenLeft:egpSize(71,12)
+    
+    ScreenLeft:egpLine(72,vec2(-22-72-TopWidth+W/2,-65+TopHeight+H/2),vec2(-32-72-TopWidth+W/2,-65+TopHeight+H/2))
+    ScreenLeft:egpLine(73,vec2(-22-0-TopWidth+W/2,-65+TopHeight+H/2),vec2(-32-0-TopWidth+W/2,-65+TopHeight+H/2))
+    ScreenLeft:egpLine(74,vec2(-22+72-TopWidth+W/2,-65+TopHeight+H/2),vec2(-32+72-TopWidth+W/2,-65+TopHeight+H/2))
+    
+    ScreenLeft:egpLine(75,vec2(-22-0-TopWidth+W/2,60+TopHeight+H/2),vec2(-32-0-TopWidth+W/2,60+TopHeight+H/2))
+    ScreenLeft:egpLine(76,vec2(-22+72-TopWidth+W/2,60+TopHeight+H/2),vec2(-32+72-TopWidth+W/2,60+TopHeight+H/2))
+    ScreenLeft:egpLine(77,vec2(22-0-TopWidth+W/2,60+TopHeight+H/2),vec2(32-0-TopWidth+W/2,60+TopHeight+H/2))
+    ScreenLeft:egpLine(78,vec2(22+72-TopWidth+W/2,60+TopHeight+H/2),vec2(32+72-TopWidth+W/2,60+TopHeight+H/2))
+    
+    ScreenLeft:egpBoxOutline(79,vec2(0+W/4,0+H/2),vec2(1+W/2,126+H/2))
+    ScreenLeft:egpSize(79,2)
+    
+    ScreenLeft:egpBox(80,vec2(-2-72-TopWidth+W/2,-25-65+TopHeight+H/2),vec2(25,25))
+    ScreenLeft:egpColor(80,vec(0))
+    
+    ScreenLeft:egpBox(81,vec2(-2-0-TopWidth+W/2,-25-65+TopHeight+H/2),vec2(25,25))
+    ScreenLeft:egpColor(81,vec(0))
+    
+    ScreenLeft:egpBox(82,vec2(-2+72-TopWidth+W/2,-25-65+TopHeight+H/2),vec2(25,25))
+    ScreenLeft:egpColor(82,vec(0))
+
+    ScreenLeft:egpBox(83,vec2(-2-0-TopWidth+W/2,-25+60+TopHeight+H/2),vec2(25,25))
+    ScreenLeft:egpColor(83,vec(0))
+    
+    ScreenLeft:egpBox(84,vec2(-2+72-TopWidth+W/2,-25+60+TopHeight+H/2),vec2(25,25))
+    ScreenLeft:egpColor(84,vec(0))
+    
+    TriangleOffset = vec2(0,13)
+    
+    local P = 85
+    local I = 86
+    
+    ScreenLeft:egpBox(P,vec2(-72-TopWidth+W/2,-65+TopHeight+H/2),vec2(0))
+    ScreenLeft:egpLine(I,vec2(0,0),vec2(0,13))
+    ScreenLeft:egpParent(I,P)
+    ScreenLeft:egpColor(I,vec(255,255,175))
+    
+    ScreenLeft:egpTriangle(I+1,vec2(-3,0)+TriangleOffset,vec2(0,10)+TriangleOffset,vec2(3,0)+TriangleOffset)
+    ScreenLeft:egpParent(I+1,P)
+    ScreenLeft:egpColor(I+1,vec(255,255,175))
+    
+    
+    local P = 88
+    local I = 89
+    
+    ScreenLeft:egpBox(P,vec2(-0-TopWidth+W/2,-65+TopHeight+H/2),vec2(0))
+    ScreenLeft:egpLine(I,vec2(0,0),vec2(0,13))
+    ScreenLeft:egpParent(I,P)
+    ScreenLeft:egpColor(I,vec(255,255,175))
+    
+    ScreenLeft:egpTriangle(I+1,vec2(-3,0)+TriangleOffset,vec2(0,10)+TriangleOffset,vec2(3,0)+TriangleOffset)
+    ScreenLeft:egpParent(I+1,P)
+    ScreenLeft:egpColor(I+1,vec(255,255,175))
+    
+    local P = 91
+    local I = 92
+    
+    ScreenLeft:egpBox(P,vec2(72-TopWidth+W/2,-65+TopHeight+H/2),vec2(0))
+    ScreenLeft:egpLine(I,vec2(0,0),vec2(0,13))
+    ScreenLeft:egpParent(I,P)
+    ScreenLeft:egpColor(I,vec(255,255,175))
+    
+    ScreenLeft:egpTriangle(I+1,vec2(-3,0)+TriangleOffset,vec2(0,10)+TriangleOffset,vec2(3,0)+TriangleOffset)
+    ScreenLeft:egpParent(I+1,P)
+    ScreenLeft:egpColor(I+1,vec(255,255,175))
+    
+    local P = 94
+    local I = 95
+    
+    ScreenLeft:egpBox(P,vec2(-0-TopWidth+W/2,60+TopHeight+H/2),vec2(0))
+    ScreenLeft:egpLine(I,vec2(0,0),vec2(0,13))
+    ScreenLeft:egpParent(I,P)
+    ScreenLeft:egpColor(I,vec(255,255,175))
+    
+    ScreenLeft:egpTriangle(I+1,vec2(-3,0)+TriangleOffset,vec2(0,10)+TriangleOffset,vec2(3,0)+TriangleOffset)
+    ScreenLeft:egpParent(I+1,P)
+    ScreenLeft:egpColor(I+1,vec(255,255,175))
+    
+    local P = 97
+    local I = 98
+    
+    ScreenLeft:egpBox(P,vec2(72-TopWidth+W/2,60+TopHeight+H/2),vec2(0))
+    ScreenLeft:egpLine(I,vec2(0,0),vec2(0,13))
+    ScreenLeft:egpParent(I,P)
+    ScreenLeft:egpColor(I,vec(255,255,175))
+    
+    ScreenLeft:egpTriangle(I+1,vec2(-3,0)+TriangleOffset,vec2(0,10)+TriangleOffset,vec2(3,0)+TriangleOffset)
+    ScreenLeft:egpParent(I+1,P)
+    ScreenLeft:egpColor(I+1,vec(255,255,175))
+    
+    AngOffset = 150
+    
+    ScreenLeft:egpAngle(85,AngOffset)
+    ScreenLeft:egpAngle(88,AngOffset)
+    ScreenLeft:egpAngle(91,AngOffset)
+    
+    
+    for(I = 56, 79){
+        ScreenLeft:egpColor(I,vec(255,255,175))
+    }
+    
+    ScreenLeft:egpText(100,"",vec2(0,0))
+    ScreenLeft:egpParent(100,80)
+    ScreenLeft:egpSize(100,10)
+    
+    ScreenLeft:egpText(101,"",vec2(0,0))
+    ScreenLeft:egpParent(101,81)
+    ScreenLeft:egpSize(101,10)
+    
+    ScreenLeft:egpText(102,"",vec2(0,0))
+    ScreenLeft:egpParent(102,82)
+    ScreenLeft:egpSize(102,10)
+    
+    ScreenLeft:egpText(103,"82",vec2(-7,0))
+    ScreenLeft:egpParent(103,83)
+    ScreenLeft:egpSize(103,10)
+    
+    ScreenLeft:egpText(104,"44",vec2(-7,0))
+    ScreenLeft:egpParent(104,84)
+    ScreenLeft:egpSize(104,10)
+    
+    for(I = 100, 104){
+        ScreenLeft:egpColor(I,vec(255,255,175))
+    }
+    TempMax = 1300
+    ScreenLeft:egpAngle(94,90-(180*(82/100)))
+    ScreenLeft:egpAngle(97,90-(180*(44/100)))
+
+}
+
+interval(100)
+
+ScreenLeft:egpText(100,Throttle:toString(),vec2(-7,0))
+ScreenLeft:egpText(101,Temp:toString(),vec2(-7,0))
+ScreenLeft:egpText(102,(90*(VTOLVal/100)):toString(),vec2(-7,0))
+
+ScreenRight:egpAngle(7,-Base:angles():yaw()+180)
+ScreenLeft:egpAngle(11,Base:angles():roll())
+ScreenLeft:egpPos(18,vec2(TopWidth+W/2,-(Base:angles():pitch()*2.85)+TopHeight+H/2))
+
+ScreenLeft:egpAngle(85,AngOffset-(240*(Throttle/100)))
+ScreenLeft:egpAngle(88,AngOffset-(240*(Temp/TempMax)))
+ScreenLeft:egpAngle(91,AngOffset-(240*(VTOLVal/100)))
+
+if(Base:angles():yaw()<0){
+    Yaw = Base:angles():yaw()+360
+}else{
+    Yaw = Base:angles():yaw()
+}
+Vel = Base:vel():length()/100
+Alt = (Pos*vec(0,0,1)):distance((Base:pos()*vec(0,0,1)))/66
+ScreenRight:egpText(35,round((Yaw)):toString(),vec2(120+W/2,-166+H/2))
+ScreenRight:egpSize(35,10)
+
+ScreenLeft:egpText(50,round((Vel)):toString(),vec2(42-(9*(round((Vel)):toString():explode(""):count()/3))+W/2,-67+H/2))
+ScreenLeft:egpSize(50,13)
+
+ScreenLeft:egpText(51,round((Alt)):toString(),vec2(212-(15*((round((Alt)):toString():explode(""):count()/5)*0.65))+W/2,-67+H/2))
+ScreenLeft:egpSize(51,16-((round((Alt)):toString():explode(""):count()*1.5)))
+
+ScreenLeft:egpText(52,round((Vel)):toString(),vec2(-225+W/2,127+H/2))
+ScreenLeft:egpSize(52,16-((round((Alt)):toString():explode(""):count()*1.5)))
+
+ScreenLeft:egpText(53,round((Alt)):toString(),vec2((-(225+8)+65)+W/2,127+H/2))
+ScreenLeft:egpSize(53,16-((round((Alt)):toString():explode(""):count()*1.5)))
+
+
+if(dupefinished()){
+    reset()
+}
+
+
+
+
+
+
+
+
+
+
