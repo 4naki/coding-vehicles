@@ -32,13 +32,13 @@
 @persist OpenCockPitIfSeatEmpty RPMLimit MinRPM IdleRPM MaxPitch MaxRoll Mass
 
 #changing values
-@persist Throttle RPM VTOLVal LandingGearVal AirBrakeVal RPMVal CockPit_Glass_Val
+@persist Throttle RPM VTOLVal LandingGearVal AirBrakeVal RPMVal CockPit_Glass_Val Temp TempFinal BaseTemp
 
 #ids
 @persist Turbine_ID RotatingProp_ID Cover_F_T_ID Cover2_R_ID Cover2_L_ID Cover_F_B_R_ID Cover_F_B_L_ID Cover_B_B_R_ID Cover_B_B_L_ID Landing_Gear_F_Door_R_ID Landing_Gear_F_Door_L_ID Landing_Gear_R_Door_ID Landing_Gear_L_Door_ID Landing_Gear_F_ID Landing_Gear_R_ID Landing_Gear_L_ID Flap_F_R_ID Flap_F_L_ID Flap2_F_R_ID Flap2_F_L_ID Flap2_B_R_ID Flap2_B_L_ID CockPit_Glass_ID 
 
 #outputs
-@outputs VTOLVal Throttle Pitch Yaw Roll Brake RPM RPMLimit F Active
+@outputs VTOLVal Throttle Pitch Yaw Roll Brake RPM RPMLimit F Active TempFinal
 if(first()){
     
     #Some adjustable settings
@@ -436,7 +436,8 @@ if(first()){
     
     holoAng(Landing_Gear_R_Door_ID,Base:toWorld(ang(0,0,-(77/100)*(100 - LandingGearVal) - 13)))
     holoAng(Landing_Gear_L_Door_ID,Base:toWorld(ang(0,0,(77/100)*(100 - LandingGearVal) + 13)))
-
+    
+    BaseTemp = randint(-18,27)
 }
 
 if(dupefinished()){
@@ -660,6 +661,16 @@ if(Active){
 }else{
     Brake = 1
 }
+Temp2 = 982*(RPM/RPMLimit)/10+randint(-10,10)
+if(Temp<1182+randint(-200,120)){
+    if(RPM>0){
+        Temp += Temp2/3.25-((Throttle/100)+clamp((RPM/(RPMLimit*0.5)),0,1)*2)
+    }
+}
+if(Temp>0){
+    Temp -= 1.1-(RPM/RPMLimit)
+}
+TempFinal = Temp + BaseTemp
 #---Holo Rotationg Stuff
 
 #VTOL Holos
