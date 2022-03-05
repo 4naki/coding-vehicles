@@ -1,0 +1,721 @@
+@name F35B Base By Naki
+
+#---Inputs
+
+#core
+@inputs Category____________________Core #nvm these "category" lines
+@inputs Ready [Base Seat Turbine]:entity
+
+#landing gears
+@inputs Category____________________Landing_Gears #nvm these "category" lines
+@inputs [Landing_Gear_F Landing_Gear_R Landing_Gear_L W1 W2 W3]:entity
+@inputs [Landing_Gear_F_Door_R Landing_Gear_F_Door_L Landing_Gear_R_Door Landing_Gear_L_Door]:entity
+
+#flaps
+@inputs Category____________________Flaps #nvm these "category" lines
+@inputs [Flap_F_R Flap_F_L Flap2_F_R Flap2_F_L Flap2_B_R Flap2_B_L]:entity
+
+#vtol stuff
+@inputs Category____________________VTOL_Stuff #nvm these "category" lines
+@inputs [RotatingProp Cover_F_T Cover2_R Cover2_L Cover_F_B_R Cover_F_B_L Cover_B_B_R Cover_B_B_L]:entity
+
+#extra
+@inputs Category____________________Extra #nvm these "category" lines
+@inputs [CockPit_Glass Point_F Point_R Point_L Point_B]:entity
+
+#---Persist
+
+#variables
+@persist Active Power VTOL LandingGear Ready
+
+#settings
+@persist OpenCockPitIfSeatEmpty RPMLimit MinRPM IdleRPM MaxPitch MaxRoll Mass
+
+#changing values
+@persist Throttle RPM VTOLVal LandingGearVal AirBrakeVal RPMVal CockPit_Glass_Val
+
+#ids
+@persist Turbine_ID RotatingProp_ID Cover_F_T_ID Cover2_R_ID Cover2_L_ID Cover_F_B_R_ID Cover_F_B_L_ID Cover_B_B_R_ID Cover_B_B_L_ID Landing_Gear_F_Door_R_ID Landing_Gear_F_Door_L_ID Landing_Gear_R_Door_ID Landing_Gear_L_Door_ID Landing_Gear_F_ID Landing_Gear_R_ID Landing_Gear_L_ID Flap_F_R_ID Flap_F_L_ID Flap2_F_R_ID Flap2_F_L_ID Flap2_B_R_ID Flap2_B_L_ID CockPit_Glass_ID 
+
+#outputs
+@outputs VTOLVal Throttle Pitch Yaw Roll Brake RPM RPMLimit F Active
+if(first()){
+    
+    #Some adjustable settings
+    
+    RPMLimit = (15000+randint(-100,100))+randint(-100,100)
+    
+    MinRPM = (RPMLimit/100)*25
+    
+    IdleRPM = (RPMLimit/100)*50
+    
+    
+    MaxPitch = 25
+    MaxRoll = 25
+    
+    OpenCockPitIfSeatEmpty = 0
+    
+    #Sets the mass of the baseplate automatically, adjust with care (recommended that you keep it as it is)
+    
+    Base:setMass(15000)
+    
+    
+    #A lot of holo stuff
+    
+    local Ent = Turbine
+    local ID = 1
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(127,0,25)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = RotatingProp
+    local ID = 2
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-185,0,0)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local ID = 3
+    holoCreate(ID)
+    holoPos(ID,Base:toWorld(vec(0,0,0)))
+    holoAng(ID,Base:toWorld(ang(-2,0,0)))
+    holoParent(ID,Base)
+    
+    local Ent = Cover_F_T
+    local ID = 4
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(98,0,44)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Cover2_R
+    local ID = 5
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(40,-21,35)))
+    holoAng(ID,holoEntity(3):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Cover2_L
+    local ID = 6
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(40,21,35)))
+    holoAng(ID,holoEntity(3):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local ID = 7
+    holoCreate(ID)
+    holoPos(ID,Base:toWorld(vec(0,0,0)))
+    holoAng(ID,Base:toWorld(ang(-8,0,0)))
+    holoParent(ID,Base)
+    
+    
+    local Ent = Cover_F_B_R
+    local ID = 8
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(135,-24,-25)))
+    holoAng(ID,holoEntity(7):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Cover_F_B_L
+    local ID = 9
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(135,24,-25)))
+    holoAng(ID,holoEntity(7):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local ID = 10
+    holoCreate(ID)
+    holoPos(ID,Base:toWorld(vec(0,0,0)))
+    holoAng(ID,Base:toWorld(ang(6,0,0)))
+    holoParent(ID,Base)
+    
+    
+    local Ent = Cover_B_B_R
+    local ID = 11
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-175,-37,-8)))
+    holoAng(ID,holoEntity(10):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Cover_B_B_L
+    local ID = 12
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-175,37,-8)))
+    holoAng(ID,holoEntity(10):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Landing_Gear_F_Door_R
+    local ID = 13
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(200,-20,-22)))
+    holoAng(ID,holoEntity(7):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Landing_Gear_F_Door_L
+    local ID = 14
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(200,20,-22)))
+    holoAng(ID,holoEntity(7):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Landing_Gear_R_Door
+    local ID = 15
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-65,-96,0)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Landing_Gear_L_Door
+    local ID = 16
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-65,96,0)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Landing_Gear_F
+    local ID = 17
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(166,0,-13)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Landing_Gear_R
+    local ID = 18
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-71,-5,-70)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Landing_Gear_L
+    local ID = 19
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-71,5,-70)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local ID = 20
+    holoCreate(ID)
+    holoPos(ID,Base:toWorld(vec(0,0,0)))
+    holoAng(ID,Base:toWorld(ang(0,-32,0)))
+    holoParent(ID,Base)
+    
+    local Ent = Flap_F_R
+    local ID = 21
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-50,-153,6)))
+    holoAng(ID,holoEntity(20):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local ID = 22
+    holoCreate(ID)
+    holoPos(ID,Base:toWorld(vec(0,0,0)))
+    holoAng(ID,Base:toWorld(ang(0,32,0)))
+    holoParent(ID,Base)
+    
+    
+    local Ent = Flap_F_L
+    local ID = 23
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-50,153,6)))
+    holoAng(ID,holoEntity(22):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local ID = 24
+    holoCreate(ID)
+    holoPos(ID,Base:toWorld(vec(0,0,0)))
+    holoAng(ID,Base:toWorld(ang(0,13,0)))
+    holoParent(ID,Base)
+    
+    
+    local Ent = Flap2_F_R
+    local ID = 25
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-128,-153,6)))
+    holoAng(ID,holoEntity(24):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local ID = 26
+    holoCreate(ID)
+    holoPos(ID,Base:toWorld(vec(0,0,0)))
+    holoAng(ID,Base:toWorld(ang(0,-13,0)))
+    holoParent(ID,Base)
+    
+    
+    local Ent = Flap2_F_L
+    local ID = 27
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-128,153,6)))
+    holoAng(ID,holoEntity(26):toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Flap2_B_R
+    local ID = 28
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-239,-75,9)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = Flap2_B_L
+    local ID = 29
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(-239,75,9)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    local Ent = CockPit_Glass
+    local ID = 30
+    holoCreate(ID,Ent:toWorld(vec(0,0,0)),vec(0),Ent:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Ent:children()
+    Ent:parentTo(holoEntity(ID))
+    holoPos(ID,Base:toWorld(vec(272,0,18)))
+    holoAng(ID,Base:toWorld(ang(0,0,0)))
+    holoParent(ID,Base)
+    for(I=ID,Children:count()){
+        Children[I,entity]:parentTo(Ent)
+    }
+    
+    for(I = 1, 30){
+        holoScale(I,vec(0))
+    }
+    
+    #Holo ID List
+    
+    Turbine_ID = 1
+    RotatingProp_ID = 2
+    Cover_F_T_ID = 4
+    Cover2_R_ID = 5
+    Cover2_L_ID = 6
+    Cover_F_B_R_ID = 8
+    Cover_F_B_L_ID = 9
+    Cover_B_B_R_ID = 11
+    Cover_B_B_L_ID = 12
+    Landing_Gear_F_Door_R_ID = 13
+    Landing_Gear_F_Door_L_ID = 14
+    Landing_Gear_R_Door_ID = 15
+    Landing_Gear_L_Door_ID = 16
+    Landing_Gear_F_ID = 17
+    Landing_Gear_R_ID = 18
+    Landing_Gear_L_ID = 19
+    Flap_F_R_ID = 21
+    Flap_F_L_ID = 23
+    Flap2_F_R_ID = 25
+    Flap2_F_L_ID = 27
+    Flap2_B_R_ID = 28
+    Flap2_B_L_ID = 29
+    CockPit_Glass_ID = 30
+    
+    Mass = Base:mass()
+    
+    Base:propInertia(vec(0))
+    Base:propDrag(0)
+    
+    Point_F:propGravity(0)
+    Point_B:propGravity(0)
+    Point_R:propGravity(0)
+    Point_L:propGravity(0)
+    
+    LandingGearVal = 100
+    
+    holoAng(Landing_Gear_F_ID,Base:toWorld(ang((90/100)*(100 - LandingGearVal),0,0)))
+    holoAng(Landing_Gear_R_ID,Base:toWorld(ang(0,0,(90/100)*(100 - LandingGearVal))))
+    holoAng(Landing_Gear_L_ID,Base:toWorld(ang(0,0,-(90/100)*(100 - LandingGearVal))))
+    
+    holoAng(Landing_Gear_F_Door_R_ID,holoEntity(7):toWorld(ang(0,0,-(90/100)*(100 - LandingGearVal))))
+    holoAng(Landing_Gear_F_Door_L_ID,holoEntity(7):toWorld(ang(0,0,(90/100)*(100 - LandingGearVal))))
+    
+    holoAng(Landing_Gear_R_Door_ID,Base:toWorld(ang(0,0,-(77/100)*(100 - LandingGearVal) - 13)))
+    holoAng(Landing_Gear_L_Door_ID,Base:toWorld(ang(0,0,(77/100)*(100 - LandingGearVal) + 13)))
+
+}
+
+if(dupefinished()){
+    reset()
+}
+
+#Good interval
+
+interval(100)
+
+if(Ready){
+
+#Sets the driver variable as Seat:driver()
+
+Driver = Seat:driver()
+
+#Keybind Shit
+
+local W = Driver:keyForward()
+local A = Driver:keyLeft()
+local S = Driver:keyBack()
+local D = Driver:keyRight()
+local Shift = Driver:keySprint()
+local Space = Driver:keyJump()
+
+local R = Driver:keyReload()
+local V = Driver:keyPressed("v")
+
+F = Driver:keyPressed("f")
+local G = Driver:keyPressed("g")
+
+local Mouse1 = Driver:keyAttack1()
+local Mouse2 = Driver:keyAttack2()
+
+#Checks if seat is taken
+
+if(changed(Driver)){
+    if(Driver){
+        Active = 1
+    }else{
+        Active = 0
+        Power = 0
+    }
+}
+
+#Restarts the sfx when engine is turned on
+
+if(changed(Power)){
+    if(Power){
+        Base:soundPlay("sfx",0,"acf_extra/airfx/f-18.wav")
+    }
+}
+
+#Stops sfx when rpm hits 0
+
+if(changed(RPM)&RPM==0){
+    if(!Power){
+        Base:soundPlay("sfx",0,"")
+    }
+}
+
+soundVolume("sfx",clamp(RPM/10,0,1500)/1000)
+soundPitch("sfx",(clamp(RPM/8,0,2500)/8)+10)
+
+if(Active){
+    
+    if(changed(R)&R){
+        Power = !Power
+    }
+    if(changed(V)&V){
+        VTOL = !VTOL
+    }
+    
+    if(changed(G)&G){
+        LandingGear = !LandingGear
+    }
+    
+    #Cockpit Glass Stuff
+    
+    if(CockPit_Glass_Val < 100){
+        CockPit_Glass_Val += 10
+    }
+    if(CockPit_Glass_Val > 100){
+        CockPit_Glass_Val = 100
+    }
+    
+    #Throttle
+    
+    if(Throttle <= 100){
+        if(Throttle >= 0){
+            Throttle += 5*(Space - Shift)
+        }
+    }
+    if(Throttle > 100){
+        Throttle = 100
+    }
+    if(Throttle < 0){
+        Throttle = 0
+    }
+    
+    #RPM Stuff
+    
+    if(Power){
+        if(RPM<IdleRPM){
+            RPM += abs((RPMLimit/200)*2)
+        }
+        if(RPM>MinRPM){
+            if(RPM<RPMLimit){
+                RPM += (Throttle-40)*4
+            }
+        }
+    }
+}else{
+    
+    #More Cockpit Glass Stuff
+    
+    if(CockPit_Glass_Val > 0){
+        CockPit_Glass_Val -= 10
+    }
+    if(CockPit_Glass_Val < 0){
+        CockPit_Glass_Val = 0
+    }
+    
+    #More RPM Stuff
+    
+    if(Throttle > 0){
+        Throttle -= 5
+    }
+}
+
+#Control Stuff
+
+Pitch = 100*(W - S)
+Yaw = 100*(Mouse1 - Mouse2)
+Roll = 100*(A - D)
+
+
+#Landing Gear Stuff
+
+if(LandingGear){
+    if(LandingGearVal < 100){
+        LandingGearVal += 10
+    }
+    if(LandingGearVal > 100){
+        LandingGearVal = 100
+    }
+}else{
+    if(LandingGearVal > 0){
+        LandingGearVal -= 10
+    }
+    if(LandingGearVal < 0){
+        LandingGearVal = 0
+    }
+}
+
+#VTOL Stuff
+
+if(VTOL){
+    if(VTOLVal < 100){
+        VTOLVal += 10
+    }
+    if(VTOLVal > 100){
+        VTOLVal = 100
+    }
+}else{
+    if(VTOLVal > 0){
+        VTOLVal -= 10
+    }
+    if(VTOLVal < 0){
+        VTOLVal = 0
+    }
+}
+
+#Spinning Stuff
+
+if(RPM>0){
+    RPM -= (RPMLimit/200)*1
+    RPMVal += clamp(RPM,0,10000)
+}else{
+    RPM = 0
+}
+
+#---Code Stuff
+
+PitchFinal = clamp((MaxPitch/100)*Pitch,-MaxPitch,MaxPitch)
+RollFinal = clamp((MaxRoll/100)*Roll,-MaxRoll,MaxRoll)
+
+if(Active){
+    
+    PitchForce = ( Base:up() * ( Mass) ) * ( Pitch / 100 ) * (1 - (VTOL*0.55))
+    YawForce = ( Base:right() * ( Mass) ) * ( Yaw / 100 ) * (1 - (VTOL*0.2))
+    RollForce = ( Base:up() * ( Mass) ) * ( Roll / 100 ) * (1 - (VTOL*0.7))
+    
+    Point_F:applyForce(-PitchForce)
+    Point_B:applyForce(PitchForce)
+    
+    Point_R:applyForce(RollForce)
+    Point_L:applyForce(-RollForce)
+    
+    Point_F:applyForce(-YawForce)
+    Point_B:applyForce(YawForce)
+    
+    AngDamping = (-Base:angVel()*8)*clamp(!VTOL,0.7,1)
+    AutoBalance = (Base:toLocal(ang(0,Base:angles():yaw(),0))*2)*VTOL
+    
+    Base:applyAngForce(((AutoBalance + AngDamping)*Mass)*(RPM/RPMLimit))
+    
+    Damping = -(((Base:forward()*Base:velL():x()*clamp(VTOL,0.01,1)) + Base:up()*Base:velL():z() + (-Base:right()*Base:velL():y())))*(clamp(!VTOL,0.1,1)*clamp(100 - (Base:velL():x()*2),10,100)/100)
+    
+    Force = RotatingProp:forward()*Throttle
+    
+    Base:applyForce(((Force + Damping)*Mass)*(RPM/RPMLimit))
+}
+
+Base:propGravity(clamp(100 - (Base:velL():x()*0.1)*!VTOL,0,100))
+foreach(I,E:entity=array(W1,W2,W3)){
+    E:setMass(1000*(clamp(100 - (((RPM/RPMLimit)*100)*Throttle/100),0,100)/100)*!LandingGear)
+}
+if(Active){
+    Brake = (Throttle==0)&Shift
+}else{
+    Brake = 1
+}
+#---Holo Rotationg Stuff
+
+#VTOL Holos
+
+holoAng(Turbine_ID,Base:toWorld(ang(0,RPMVal/70,0)))
+holoAng(RotatingProp_ID,Base:toWorld(ang(-(90/100)*VTOLVal,0,0)))
+
+holoAng(Cover_F_T_ID,Base:toWorld(ang(-(90/100)*VTOLVal,0,0)))
+
+holoAng(Cover2_R_ID,holoEntity(3):toWorld(ang(0,0,(90/100)*VTOLVal)))
+holoAng(Cover2_L_ID,holoEntity(3):toWorld(ang(0,0,-(90/100)*VTOLVal)))
+
+holoAng(Cover_F_B_R_ID,holoEntity(7):toWorld(ang(0,0,-(90/100)*VTOLVal)))
+holoAng(Cover_F_B_L_ID,holoEntity(7):toWorld(ang(0,0,(90/100)*VTOLVal)))
+
+holoAng(Cover_B_B_R_ID,holoEntity(10):toWorld(ang(0,0,-(50/100)*VTOLVal)))
+holoAng(Cover_B_B_L_ID,holoEntity(10):toWorld(ang(0,0,(50/100)*VTOLVal)))
+
+#Landing Gear Holos
+
+holoAng(Landing_Gear_F_ID,Base:toWorld(ang((90/100)*(100 - LandingGearVal),0,0)))
+holoAng(Landing_Gear_R_ID,Base:toWorld(ang(0,0,(90/100)*(100 - LandingGearVal))))
+holoAng(Landing_Gear_L_ID,Base:toWorld(ang(0,0,-(90/100)*(100 - LandingGearVal))))
+
+holoAng(Landing_Gear_F_Door_R_ID,holoEntity(7):toWorld(ang(0,0,-(90/100)*(100 - LandingGearVal))))
+holoAng(Landing_Gear_F_Door_L_ID,holoEntity(7):toWorld(ang(0,0,(90/100)*(100 - LandingGearVal))))
+
+holoAng(Landing_Gear_R_Door_ID,Base:toWorld(ang(0,0,-(77/100)*(100 - LandingGearVal) - 13)))
+holoAng(Landing_Gear_L_Door_ID,Base:toWorld(ang(0,0,(77/100)*(100 - LandingGearVal) + 13)))
+
+#Flap Holos
+
+holoAng(Flap2_B_L_ID,Base:toWorld(ang(-PitchFinal,0,0)))
+holoAng(Flap2_B_R_ID,Base:toWorld(ang(-PitchFinal,0,0)))
+
+holoAng(Flap2_F_R_ID,holoEntity(24):toWorld(ang(-RollFinal,0,0)))
+holoAng(Flap2_F_L_ID,holoEntity(26):toWorld(ang(RollFinal,0,0)))
+
+holoAng(Flap_F_R_ID,holoEntity(20):toWorld(ang(RollFinal/2,0,0)))
+holoAng(Flap_F_L_ID,holoEntity(22):toWorld(ang(-RollFinal/2,0,0)))
+
+#CockPit Glass Holo
+
+holoAng(CockPit_Glass_ID,Base:toWorld(ang((45/100)*(100 - CockPit_Glass_Val),0,0)))
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
