@@ -460,7 +460,7 @@ if(first()){
 interval(100)
 
 ScreenLeft:egpText(100,Throttle:toString(),vec2(-7,0))
-ScreenLeft:egpText(101,Temp:toString(),vec2(-7,0))
+ScreenLeft:egpText(101,round(Temp):toString(),vec2(-7,0))
 ScreenLeft:egpText(102,(90*(VTOLVal/100)):toString(),vec2(-7,0))
 
 ScreenRight:egpAngle(7,-Base:angles():yaw()+180)
