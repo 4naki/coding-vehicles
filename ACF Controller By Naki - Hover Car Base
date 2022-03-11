@@ -1,0 +1,108 @@
+@name ACF Controller By Naki - Hover Car Base
+@inputs Seat:entity Base:entity Active Throttle ClutchIn Reverse GearUp GearDown HandBreak RPM Brake Hover
+@outputs DisableCutoff GearOut Clutch ThrottleOut HandBreakOut Power LightsValOut
+
+@persist DisableCutoff Gears GearOut Gear BrakePower SaveGear ShiftSpeed Clutch Shifting StartingSound:string StartingTime IdleRPM ThrottleOut Power Stalling HandBreakOut BrakeOut ClutchOverwrite LightsVal LightsValOut
+if(first()){
+    DisableCutoff = 1
+    
+    BrakePower = 1
+    
+    IdleRPM = 770
+    
+    Gears = 6
+    
+    ShiftSpeed = 360
+    
+    Stalling = 0
+}
+
+interval(100)
+
+if(changed(Active)){
+    if(Active){
+        Power=1
+    }else{
+        Power=0
+        LightsVal=0
+    }
+}
+
+Lights = Seat:driver():keyPressed("f")
+
+if(changed(Lights)&Lights){
+    LightsVal=!LightsVal
+    LightsValOut=LightsVal*255
+}
+
+if(Stalling){
+    if(RPM<IdleRPM*1.1){
+        if(Power*!Clutch*(Gear>0)*!HandBreakOut){
+            Power=0
+        }
+    }
+}
+
+if(HandBreak){
+    HandBreakOut=1*!Hover
+}
+
+if(changed(HandBreak)&!HandBreak){
+    HandBreakOut=0
+}
+
+Clutch=0+(1*ClutchOverwrite)
+if(changed(Reverse)){
+    if(!Reverse){
+        Gear=SaveGear
+    }
+}
+if(Reverse){
+    Gear=Gears+1
+}else{
+    if(!Hover){
+        if(Shifting==0){
+            if(Gear<Gears-1){
+                if(changed(GearUp)&GearUp){
+                    if(Gear<Gears){
+                        Shifting=1
+                        SaveGear=Gear
+                        ClutchOverwrite=1
+                        timer("shiftup",ShiftSpeed)
+                        timer("shift",ShiftSpeed/3)
+                    }
+                }
+            }
+            if(changed(GearDown)&GearDown){
+                if(Gear>0){
+                    Shifting=1
+                    SaveGear=Gear
+                    ClutchOverwrite=1
+                    timer("shiftdown",ShiftSpeed)
+                    timer("shift",ShiftSpeed/3)
+                }
+            }
+        }
+    }
+}
+if(clk("shift")){
+    Gear=0
+}
+
+if(clk("shiftup")){
+    SaveGear+=1
+    Gear=SaveGear
+    ClutchOverwrite=0
+    Shifting=0
+}
+if(clk("shiftdown")){
+    SaveGear-=1
+    Gear=SaveGear
+    ClutchOverwrite=0
+    Shifting=0
+}
+ThrottleOut=(((65+(30*ClutchIn))*(Throttle|Reverse))*!Hover)+(45*Hover)
+GearOut = (Gear*!Hover)+(1*Hover)
+if(dupefinished()){
+    reset()
+}
