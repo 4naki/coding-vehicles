@@ -1,0 +1,149 @@
+@name Hover Car Base
+@inputs [Base Seat Wheel_Front_Right Wheel_Front_Left Wheel_Back_Right Wheel_Back_Left Engine GearBox Differential F_R F_L B_R B_L]:entity
+@persist Active Hover Height Mass
+
+@persist [All]:array
+
+@outputs Active Hover A D Height_Adj Distance Fly_Check ApplyForce:vector All:array
+if(first()){
+    Height = 65
+    
+    #[
+    for(I = 1, 4){
+        holoCreate(I)
+    }
+    ]#
+    
+    All = array()
+    All:pushEntity(Base)
+    
+    foreach(I,E:entity=Base:children()){
+        All:pushEntity(E)
+    }
+    
+    foreach(I,E:entity=Base:getConstraints()){
+        All:pushEntity(E)
+    }
+    
+    foreach(I,E:entity=Wheel_Front_Right:children()){
+        All:pushEntity(E)
+    }
+    foreach(I,E:entity=Wheel_Front_Left:children()){
+        All:pushEntity(E)
+    }
+    foreach(I,E:entity=Wheel_Back_Right:children()){
+        All:pushEntity(E)
+    }
+    foreach(I,E:entity=Wheel_Back_Left:children()){
+        All:pushEntity(E)
+    }
+    
+    foreach(I,E:entity=Wheel_Front_Right:getConstraints()){
+        All:pushEntity(E)
+    }
+    foreach(I,E:entity=Wheel_Front_Left:getConstraints()){
+        All:pushEntity(E)
+    }
+    foreach(I,E:entity=Wheel_Back_Right:getConstraints()){
+        All:pushEntity(E)
+    }
+    foreach(I,E:entity=Wheel_Back_Left:getConstraints()){
+        All:pushEntity(E)
+    }
+    
+    Mass = (Base:mass()+(Wheel_Front_Right:mass()*2)+(Wheel_Back_Right:mass()*2)+(GearBox:mass())+(Differential:mass()*2))
+}
+
+interval(100)
+
+Driver = Seat:driver()
+Active = Driver:isValid()
+
+if(Active){
+    W = Driver:keyForward()
+    S = Driver:keyBack()
+    A = Driver:keyLeft()
+    D = Driver:keyRight()
+    
+    R = Driver:keyReload()
+    Shift = Driver:keySprint()
+    Space = Driver:keyJump()
+    Mouse1 = Driver:keyAttack1()
+    Mouse2 = Driver:keyAttack2()
+    
+    if(changed(R)&R){
+        Hover = !Hover
+        rangerPersist(1)
+        rangerFilter(All)
+        rangerHitWater(1)
+    }
+    if(Hover){
+        Ranger_Front_Right = rangerOffsetHull(Height*2,Wheel_Front_Right:pos(),-Base:up(),vec(15,15,15))
+        Ranger_Front_Left = rangerOffsetHull(Height*2,Wheel_Front_Left:pos(),-Base:up(),vec(15,15,15))
+        Ranger_Back_Right = rangerOffsetHull(Height*2,Wheel_Back_Right:pos(),-Base:up(),vec(15,15,15))
+        Ranger_Back_Left = rangerOffsetHull(Height*2,Wheel_Back_Left:pos(),-Base:up(),vec(15,15,15))
+        
+        #[
+        for(I = 1, 4){
+            holoPos(I,array(Ranger_Front_Right,Ranger_Front_Left,Ranger_Back_Right,Ranger_Back_Left)[I,ranger]:pos())
+        }
+        ]#
+        
+        Distance = (Ranger_Front_Right:distance()+Ranger_Front_Left:distance()+Ranger_Back_Right:distance()+Ranger_Back_Left:distance())/4
+        
+        Hit = (Ranger_Front_Right:hit()&Ranger_Front_Left:hit()&Ranger_Back_Right:hit()&Ranger_Back_Left:hit())
+        
+        Fly_Check = (!Space)&(Hit)
+        
+        Height_Adj = (Height - Distance)*Fly_Check
+        
+        MoveForce = (((Base:forward()*35)*(W-S))+((Base:up()*(clamp(2*(Base:velL():x()*0.05)+clamp((Base:angVel():yaw()*0.7),0,5),0,2)))*(W*Hit)))*10
+        HoverForce = Base:up()*(Height_Adj*1.5)
+        Damping = Base:vel()*0.2
+        
+        Mass = (Base:mass()+(Wheel_Front_Right:mass()*2)+(Wheel_Back_Right:mass()*2)+(GearBox:mass())+(Differential:mass()*2))
+        
+        ApplyForce = (MoveForce + HoverForce - Damping)*Mass
+        
+        Base:applyForce(ApplyForce)
+        
+        AngDamping = (-Base:angVel()*10)-ang(0,Base:angVel():yaw(),0)*25
+        AutoBalance = (Base:toLocal(ang(
+        (2+(clamp(1*(Base:velL():x()*0.04),0,3)*(Base:angVel():yaw()<25))*(W-S))+(35*((Shift*!Hit)-Space)),
+        Base:angles():yaw()+(125*(A-D)),
+        -15*(A-D))
+        )*15)+(Base:toLocal(ang(0,Base:angles():yaw(),0))*25)
+        
+        Base:applyAngForce(((AutoBalance + AngDamping)*Mass))
+    }
+}else{
+    if(Hover){
+        Hover=0
+    }
+}
+if(changed(Hover)){
+    if(Hover){
+        Base:soundPlay("button",0,"buttons/lever8.wav")
+        Base:soundPlay("sfx",0,"thrusters/Hover01.wav")
+        foreach(I,E:entity=All){
+            if(E:mass()>25){
+                E:propGravity(0)
+            }
+        }
+    }else{
+        Base:soundPlay("button",0,"buttons/button4.wav")
+        Base:soundPlay("sfx",0,"")
+        foreach(I,E:entity=All){
+            if(E:mass()>25){
+                E:propGravity(1)
+            }
+        }
+    }
+}
+if(Hover){
+    soundPitch("sfx",clamp(75+abs(Base:velL():x()*0.01),75,115))
+    soundVolume("sfx",clamp(35+abs(Base:velL():x()*0.01),35,100)/100)
+}
+if(dupefinished()){
+    reset()
+}
