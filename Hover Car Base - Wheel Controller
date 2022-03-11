@@ -1,0 +1,83 @@
+@name Hover Car Base - Wheel Controller
+@inputs Hover A D [Base F_R F_L B_R B_L]:entity
+@persist SL Roll TurnVal RollVal TurnSpeed RollSpeed TurnAmount
+
+if(first()){
+    SL = 42
+    Roll = 90
+    TurnSpeed = 95
+    RollSpeed = 15
+    
+    TurnAmount = (100/clamp(100-TurnSpeed,0,100))
+}
+
+interval(60)
+
+if(!entity():isPlayerHolding()){
+    if(!entity():isFrozen()){
+        entity():propFreeze(1)
+    }
+}
+    
+if(abs(TurnVal) <= 100){
+    if(A|D){
+        TurnVal += TurnAmount*(A-D)
+    }else{
+        if(TurnVal > 0){
+            TurnVal -= TurnAmount
+        }
+        if(TurnVal < 0){
+            TurnVal += TurnAmount
+        }
+    }
+}
+
+if(TurnVal > 100){
+    TurnVal = 100
+}
+
+if(TurnVal < -100){
+    TurnVal = -100
+}
+
+TurnValFinal = clamp(clamp(SL-(Base:velL():x()*0.022),(SL/100)*25,SL) * (TurnVal*!Hover / 100), -SL, SL)
+
+if(RollVal > 0){
+    RollVal -= (Roll/100)*RollSpeed*!Hover
+}
+
+if(RollVal < 0){
+    RollVal = 0
+}
+
+if(RollVal < Roll){
+    RollVal += (Roll/100)*RollSpeed*Hover
+}
+
+if(RollVal > Roll){
+    RollVal = Roll
+}
+
+RollValFinal = clamp(Roll * (RollVal / 100), 0, Roll)
+
+F_R:setAng(Base:toWorld(ang(0,TurnValFinal*!Hover,RollValFinal)))
+F_L:setAng(Base:toWorld(ang(0,TurnValFinal*!Hover,-RollValFinal)))
+
+B_R:setAng(Base:toWorld(ang(0,0,RollValFinal)))
+B_L:setAng(Base:toWorld(ang(0,0,-RollValFinal)))
+
+F_R:setPos(entity():toWorld(vec(20,-12,0)))
+F_L:setPos(entity():toWorld(vec(20,12,0)))
+
+B_R:setPos(entity():toWorld(vec(-20,-12,0)))
+B_L:setPos(entity():toWorld(vec(-20,12,0)))
+
+foreach(I,E:entity=array(F_R, F_L, B_R, B_L)){
+    if(!E:isFrozen()){
+        E:propFreeze(1)
+    }
+}
+
+if(dupefinished()){
+    reset()
+}
