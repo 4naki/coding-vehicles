@@ -1,0 +1,65 @@
+@name SetAng E2 By Naki
+@inputs [Base Seat Ent]:entity
+@persist Val SL TurnSpeed TurnAmount Axis:angle
+@model models/sprops/rectangles/size_2/rect_12x12x3.mdl
+
+#Debug
+@outputs Ang:angle
+
+A = Seat:driver():keyLeft()
+D = Seat:driver():keyRight()
+
+if(first()|dupefinished()){
+    
+    SL=45
+    
+    Axis=ang(0,SL,0)
+    
+    
+    
+    entity():propGravity(0)
+    entity():setMass(10000)
+    
+    Ent:propGravity(0)
+    Ent:setMass(10000)
+
+    TurnSpeed = 98
+    
+    
+    TurnAmount = (100/clamp(100-TurnSpeed,0,100))
+}
+
+interval(100)
+
+if(abs(Val) <= 100){
+    if(A|D){
+        Val += TurnAmount*(A-D)
+    }else{
+        if(Val > 0){
+            Val -= TurnAmount
+        }
+        if(Val < 0){
+            Val += TurnAmount
+        }
+    }
+}
+
+if(Val > 100){
+    Val = 100
+}
+
+if(Val < -100){
+    Val = -100
+}
+
+TurnValFinal = clamp(clamp(SL-(Base:velL():x()*0.022),(SL/100)*25,SL) * (Val / 100), -SL, SL)
+
+
+if(!entity():isPlayerHolding()){
+    entity():setAng(Base:toWorld(Axis*(TurnValFinal/SL)))
+    Ent:setAng(Base:toWorld(Axis*(TurnValFinal/SL)))
+    if(!entity():isFrozen()){
+        entity():propFreeze(1)
+        Ent:propFreeze(1)
+    }
+}
