@@ -58,7 +58,7 @@ if(changed(Lights)&Lights){
 
 if(Stalling){
     if(RPM<IdleRPM*1.1){
-        if(Power*!Clutch*(Gear>0)*!HandBreakOut){
+        if(Power*!Clutch*(Gear>0)){
             Power=0
         }
     }
