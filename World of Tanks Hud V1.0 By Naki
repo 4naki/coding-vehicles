@@ -7,7 +7,7 @@
 @persist SpreadAddSpeed SpreadNegateSpeed SpreadBaseVal SpreadMaxVal SpreadAddSpeedTreshold Spread
 @trigger none
 runOnChat(1)
-if(first()|~EGP&EGP){
+if(first()|dupefinished()){
     TankName="T-54 ltwt."
     TankNameOffset=0
     
@@ -518,8 +518,4 @@ if(chatClk(owner())){
     if(owner():lastSaid()==".egplimit"){
         print("EGP Limit: "+egpMaxObjects())
     }
-}
-
-if(dupefinished()){
-    reset()
 }
