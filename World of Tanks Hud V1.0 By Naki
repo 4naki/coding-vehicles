@@ -414,9 +414,13 @@ if(changed(Seat:driver())&Seat:driver()){
 }
 if(changed(HP)){
     EGP:egpSetText(12,HP+"/"+MaxHP)
+    local I = 10
+    EGP:egpLine(I,vec2(TankInfoPanelW-107+W/2,TankInfoPanelH-85+H/2),vec2(TankInfoPanelW+(-107+(107*((HP/MaxHP)*2)))+W/2,TankInfoPanelH-85+H/2))
+    EGP:egpColor(I,vec(255*(MaxHP-HP), 255*(HP/MaxHP), 0)*0.45)
 }
 
 if(changed(AP)){
+    EGP:egpSetText(48,AP:toString())
     if(AP==0){
         EGP:egpColor(33,vec(175,0,0))
         EGP:egpColor(57,vec(80))
@@ -428,6 +432,7 @@ if(changed(AP)){
 }
 
 if(changed(HE)){
+    EGP:egpSetText(47,HE:toString())
     if(HE==0){
         EGP:egpColor(32,vec(175,0,0))
         EGP:egpColor(56,vec(80))
@@ -439,6 +444,7 @@ if(changed(HE)){
 }
 
 if(changed(Gold)){
+    EGP:egpSetText(46,Gold:toString())
     if(Gold==0){
         EGP:egpColor(31,vec(175,0,0))
         EGP:egpColor(55,vec(80))
