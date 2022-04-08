@@ -1,13 +1,17 @@
-@name World of Tanks Hud V1.0 By Naki
+@name WoT Hud By Naki
 @inputs AP HE Gold Slot4 Slot5 Slot6 HP
-@inputs [Seat Base Gun]:entity EGP:wirelink
+@inputs [Seat Base Gun]:entity EGP:wirelink Active
 @persist W H TankInfoPanelW TankInfoPanelH HP MaxHP
 @persist AP HE Gold
 @persist Slot4 Slot5 Slot6
 @persist SpreadAddSpeed SpreadNegateSpeed SpreadBaseVal SpreadMaxVal SpreadAddSpeedTreshold Spread
+@persist Version:string
 @trigger none
 runOnChat(1)
 if(first()|dupefinished()){
+    
+    #[ -- ] Settings [ -- ]#
+    
     TankName="T-54 ltwt."
     TankNameOffset=0
     
@@ -22,6 +26,9 @@ if(first()|dupefinished()){
     MaxHP=1300
     HPOffset=0
     
+    
+    #[ -- ] Settings ends here [ -- ]#
+    
     EGP:egpClear()
     
     W=egpScrW(owner())
@@ -29,6 +36,9 @@ if(first()|dupefinished()){
     
     TankInfoPanelW=-845
     TankInfoPanelH=425
+    
+    setName("WoT EGP Hud "+"["+owner():name()+"]")
+    Version="V1.1"
     
     local I = 4
     EGP:egpBox(I,vec2(TankInfoPanelW+W/2,TankInfoPanelH+H/2),vec2(230))
@@ -490,24 +500,25 @@ if(changed(Slot4)){
 
 interval(100)
 
-if(Spread<100){
-Add=clamp(((abs(Gun:angVel():pitch())+abs(Gun:angVel():yaw())+abs(Gun:angVel():roll()))/3),0,100)*SpreadAddSpeed
-Spread+=Add*(Add>SpreadAddSpeedTreshold/10)
-}elseif(Spread>100){
-    Spread=100
-}
-if(Spread>0){
-    Spread-=SpreadNegateSpeed
-}elseif(Spread<0){
-    Spread=0
-}
-EGP:egpSize(2,vec2(clamp(SpreadBaseVal+((SpreadMaxVal-SpreadBaseVal)*(clamp(Spread,0,100)/100)),SpreadBaseVal,SpreadMaxVal)))
-Gun_Ranger = rangerOffset( 100000 , Gun:toWorld(vec(150,0,0)) , Gun:forward() )
-holoPos(1,Gun_Ranger:position())
+if(Active){
+    if(Spread<100){
+        Add=clamp(((abs(Gun:angVel():pitch())+abs(Gun:angVel():yaw())+abs(Gun:angVel():roll()))/3),0,100)*SpreadAddSpeed
+        Spread+=Add*(Add>SpreadAddSpeedTreshold/10)
+    }elseif(Spread>100){
+        Spread=100
+    }
+    if(Spread>0){
+        Spread-=SpreadNegateSpeed
+    }elseif(Spread<0){
+        Spread=0
+    }
+    EGP:egpSize(2,vec2(clamp(SpreadBaseVal+((SpreadMaxVal-SpreadBaseVal)*(clamp(Spread,0,100)/100)),SpreadBaseVal,SpreadMaxVal)))
+    Gun_Ranger = rangerOffset( 100000 , Gun:toWorld(vec(150,0,0)) , Gun:forward() )
+    holoPos(1,Gun_Ranger:position())
 
-Yaw = Gun:toLocal(Base:angles()):yaw()
-EGP:egpAngle(3,Yaw)
-
+    Yaw = Gun:toLocal(Base:angles()):yaw()
+    EGP:egpAngle(3,Yaw)
+}
 #[ -- ] Chat Commands [ -- ]#
 
 if(chatClk(owner())){
@@ -517,5 +528,8 @@ if(chatClk(owner())){
     }
     if(owner():lastSaid()==".egplimit"){
         print("EGP Limit: "+egpMaxObjects())
+    }
+    if(owner():lastSaid()==".version"){
+        print("["+entity():getName()+"] Version: "+Version)
     }
 }
