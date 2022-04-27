@@ -29,7 +29,7 @@
 
 if (first()) {
     
-    Editmode = 1
+    Editmode = 0
     
     rangerHitEntities(!Editmode)
     
