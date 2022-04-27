@@ -1,0 +1,605 @@
+@name Naki's Mech Base
+@inputs Base:entity Seat:entity CamAng:angle W2 S2 CamAng2:angle
+@outputs CamPos:vector CamDistance Active Fire Height_Adj2 Height_Adj Leg_Distance Leg_Distance2
+
+#-- front legs bones
+@inputs [Thigh_R Thigh_L Leg_R Leg_L Calf_R Calf_L Foot_R Foot_L]:entity
+#-- core variables
+@persist [Time_delta Time_current] [Down Left]:vector [Ang]:angle Inertia:angle Mass CamPos:vector CamDistance Active A3 Step Editmode
+#-- mech variables
+@persist [Mech_height Mech_speed Mech_gait_time Mech_gait_transition] [Mech_pos Mech_vel Leg_Pos_Offset]:vector [Align]:angle [Mech_gaits]:table [Mech_gait_last Mech_gait_next]:array BonesVisible StepDistance Aim AimHeight StepSound:string
+#-- feet variables
+@persist [FL_a_real]:angle [FL_ent]:entity [FL_groundz FL_state FL_stepz FL_time] [FL_a_last FL_a_next]:quaternion [FL_p_foot FL_p_last FL_p_move FL_p_next FL_p_real]:vector
+@persist [FR_a_real]:angle [FR_ent]:entity [FR_groundz FR_state FR_stepz FR_time] [FR_a_last FR_a_next]:quaternion [FR_p_foot FR_p_last FR_p_move FR_p_next FR_p_real]:vector
+@persist [RL_a_real]:angle [RL_ent]:entity [RL_groundz RL_state RL_stepz RL_time] [RL_a_last RL_a_next]:quaternion [RL_p_foot RL_p_last RL_p_move RL_p_next RL_p_real]:vector
+@persist [RR_a_real]:angle [RR_ent]:entity [RR_groundz RR_state RR_stepz RR_time] [RR_a_last RR_a_next]:quaternion [RR_p_foot RR_p_last RR_p_move RR_p_next RR_p_real]:vector
+
+#-- ik variables
+@persist FSegmentLengthA FSegmentLengthB FSegmentLengthC BSegmentLengthA BSegmentLengthB BSegmentLengthC
+
+#-- cam stuff
+@persist ThirdPerson [ThirdPersonPos FirstPersonPos]:vector ThirdPersonDistance FirstPersonDistance
+
+@trigger none
+#-- main base by shadowscion
+
+#ifdef httpRequest(string)
+@persist [Version Link]:string Block
+#endif
+
+if (first()) {
+    
+    Editmode = 1
+    
+    rangerHitEntities(!Editmode)
+    
+    rangerPersist(1)
+    rangerFilter(players())
+    rangerFilter(Base:children())
+    rangerFilter(Base)
+    rangerFilter(Base:getConstraints())
+    
+    Base:setMass(2000)
+    
+    Mass = Base:mass()
+    Inertia = shiftL(ang(Base:inertia()))
+
+    ThirdPersonPos = vec(0,0,50)
+    ThirdPersonDistance = 250
+    
+    FirstPersonPos = vec(63,0,-28)
+    FirstPersonDistance = -25
+    
+    FSegmentLengthA = 35
+    FSegmentLengthB = 45
+    FSegmentLengthC = 45
+    
+    #include "2_legged_ik_function"
+    
+    #-- mech variables
+    
+    StepSound = "npc/dog/dog_footstep2.wav"
+    
+    Mech_height = 250
+    
+    Leg_Pos_Offset = vec(0,-22,-10)
+    
+    StepDistance = 110
+    
+    Mech_gaits = table(
+        "walk" = array(
+            0.75,80,   #cycle rate,speed
+            0.0,0.52, #fl start,length
+            0.5,0.52, #fr start,length
+            0.5,0.52, #rl start,length
+            0.5,0.52  #rr start,length
+        ),
+        "gallop" = array(
+            1.12,95,
+            0.0,0.89,
+            0.5,0.89,
+            0.5,0.89,
+            0.5,0.89
+        )
+    )
+
+    Mech_gait_last = Mech_gaits["walk",array]
+    Mech_gait_next = Mech_gaits["walk",array]
+
+    function number gseq(Start,Length,Time) {
+        local Offset = Time - (Start % 1)
+        return inrange(Offset,-1,Length)*inrange(Offset % 1,0,Length)*(Offset % 1)/Length
+    }
+
+    #-- feet variables
+    FL_groundz = 6
+    FR_groundz = 6
+    RL_groundz = 6
+    RR_groundz = 6
+
+    FL_stepz = 0.3
+    FR_stepz = 0.3
+    RL_stepz = 0.3
+    RR_stepz = 0.3
+
+    FL_p_foot = vec(0,25,0)
+    FR_p_foot = vec(0,-25,0)
+    RL_p_foot = vec(0,0,0)
+    RR_p_foot = vec(0,0,0)
+
+    FL_p_last = FL_p_next = FL_p_real = entity():toWorld(FL_p_foot)
+    FR_p_last = FR_p_next = FR_p_real = entity():toWorld(FR_p_foot)
+    RL_p_last = RL_p_next = RL_p_real = entity():toWorld(RL_p_foot)
+    RR_p_last = RR_p_next = RR_p_real = entity():toWorld(RR_p_foot)
+
+    BonesVisible = 0
+
+    for (I = 1,5) {
+        holoCreate(I)
+        holoModel(I,"models/sprops/misc/axis_plane.mdl")
+        holoAlpha(I,BonesVisible)
+    }
+    holoParent(5,Base)
+    holoPos(5,Base:toWorld(vec(0,0,0)))
+    holoAng(5,Base:toWorld(ang(0,0,0)))
+    
+    FL_ent = holoEntity(1)
+    FR_ent = holoEntity(2)
+
+    #-- core variables
+    Down = vec(0,0,-1)
+    Left = vec(0,1,0)
+    
+    #front right
+    
+    holoCreate(6,Thigh_R:toWorld(vec(0,0,0)),vec(0),Thigh_R:toWorld(ang(0,0,0)),vec(255),"cube")
+    holoPos(6,holoEntity(5):toWorld(Leg_Pos_Offset))
+    holoAng(6,holoEntity(5):toWorld(ang(0,0,0)))
+    holoParent(6,holoEntity(5))
+    
+    holoCreate(7,Thigh_R:toWorld(vec(0,0,0)),vec(0),Thigh_R:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Thigh_R:children()
+    rangerFilter(Children)
+    Thigh_R:parentTo(holoEntity(7))
+    holoPos(7,holoEntity(6):toWorld(vec(0,0,0)))
+    holoAng(7,holoEntity(6):toWorld(ang(0,0,0)))
+    holoParent(7,holoEntity(6))
+    for(I=1,Children:count()){
+        Children[I,entity]:parentTo(Thigh_R)
+    }
+    
+    holoCreate(8,Leg_R:toWorld(vec(0,0,0)),vec(0),Leg_R:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Leg_R:children()
+    rangerFilter(Children)
+    Leg_R:parentTo(holoEntity(8))
+    holoPos(8,holoEntity(7):toWorld(vec(0,0,FSegmentLengthA)))
+    holoAng(8,holoEntity(7):toWorld(ang(0,0,0)))
+    holoParent(8,holoEntity(7))
+    for(I=1,Children:count()){
+        Children[I,entity]:parentTo(Leg_R)
+    }
+    
+    holoCreate(9,Calf_R:toWorld(vec(0,0,0)),vec(0),Calf_R:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Calf_R:children()
+    rangerFilter(Children)
+    Calf_R:parentTo(holoEntity(9))
+    holoPos(9,holoEntity(8):toWorld(vec(0,0,FSegmentLengthB)))
+    holoAng(9,holoEntity(8):toWorld(ang(0,0,0)))
+    holoParent(9,holoEntity(8))
+    for(I=1,Children:count()){
+        Children[I,entity]:parentTo(Calf_R)
+    }
+    
+    
+    #front left
+    
+    holoCreate(10,Thigh_L:toWorld(vec(0,0,0)),vec(0),Thigh_L:toWorld(ang(0,0,0)),vec(255),"cube")
+    holoPos(10,holoEntity(5):toWorld(Leg_Pos_Offset*vec(1,-1,1)))
+    holoAng(10,holoEntity(5):toWorld(ang(0,0,0)))
+    holoParent(10,holoEntity(5))
+    
+    holoCreate(11,Thigh_L:toWorld(vec(0,0,0)),vec(0),Thigh_L:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Thigh_L:children()
+    rangerFilter(Children)
+    Thigh_L:parentTo(holoEntity(11))
+    holoPos(11,holoEntity(10):toWorld(vec(0,0,0)))
+    holoAng(11,holoEntity(10):toWorld(ang(0,0,0)))
+    holoParent(11,holoEntity(10))
+    for(I=1,Children:count()){
+        Children[I,entity]:parentTo(Thigh_L)
+    }
+    
+    holoCreate(12,Leg_L:toWorld(vec(0,0,0)),vec(0),Leg_L:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Leg_L:children()
+    rangerFilter(Children)
+    Leg_L:parentTo(holoEntity(12))
+    holoPos(12,holoEntity(11):toWorld(vec(0,0,FSegmentLengthA)))
+    holoAng(12,holoEntity(11):toWorld(ang(0,0,0)))
+    holoParent(12,holoEntity(11))
+    for(I=1,Children:count()){
+        Children[I,entity]:parentTo(Leg_L)
+    }
+    
+    holoCreate(13,Calf_L:toWorld(vec(0,0,0)),vec(0),Calf_L:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Calf_L:children()
+    rangerFilter(Children)
+    Calf_L:parentTo(holoEntity(13))
+    holoPos(13,holoEntity(12):toWorld(vec(0,0,FSegmentLengthB)))
+    holoAng(13,holoEntity(12):toWorld(ang(0,0,0)))
+    holoParent(13,holoEntity(12))
+    for(I=1,Children:count()){
+        Children[I,entity]:parentTo(Calf_L)
+    }
+    
+    #feet
+    
+    #front right
+    holoCreate(22,Foot_R:toWorld(vec(0,0,0)),vec(0),Foot_R:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Foot_R:children()
+    rangerFilter(Children)
+    Foot_R:parentTo(holoEntity(22))
+    holoPos(22,holoEntity(9):toWorld(vec(0,0,FSegmentLengthC)))
+    holoAng(22,holoEntity(9):toWorld(ang(0,0,0)))
+    holoParent(22,holoEntity(9))
+    for(I=1,Children:count()){
+        Children[I,entity]:parentTo(Foot_R)
+    }
+    
+    #front left
+    holoCreate(23,Foot_L:toWorld(vec(0,0,0)),vec(0),Foot_L:toWorld(ang(0,0,0)),vec(255),"cube")
+    local Children=Foot_L:children()
+    rangerFilter(Children)
+    Foot_L:parentTo(holoEntity(23))
+    holoPos(23,holoEntity(13):toWorld(vec(0,0,FSegmentLengthC)))
+    holoAng(23,holoEntity(13):toWorld(ang(0,0,0)))
+    holoParent(23,holoEntity(13))
+    for(I=1,Children:count()){
+        Children[I,entity]:parentTo(Foot_L)
+    }
+
+    holoCreate(26)
+    holoParent(26,holoEntity(5))
+    holoPos(26,holoEntity(6):toWorld(vec(0,0,0)))
+    holoAng(26,holoEntity(5):toWorld(ang(0,0,0)))
+    
+    holoCreate(27)
+    holoParent(27,holoEntity(5))
+    holoPos(27,holoEntity(10):toWorld(vec(0,0,0)))
+    holoAng(27,holoEntity(5):toWorld(ang(0,0,0)))
+    
+    for(I=26,28){
+        holoAlpha(I,0)
+    }
+    
+    rangerFilter(array(Foot_R,Foot_L,Thigh_R,Thigh_L,Leg_R,Leg_L,Calf_R,Calf_L))
+    
+    timer("update",500)
+    
+    ThirdPerson = 1
+    
+    
+    #Update check code
+    
+    #ifdef httpRequest(string)
+        Link = ""
+        VersionCheckLink = ""
+        Version = "1.0"
+        
+        runOnHTTP(1)
+        if(Link!=""){
+        }else{
+            Block=1
+        }
+        if(VersionCheckLink!=""){
+            httpRequest(VersionCheckLink)
+        }else{
+            Block=1
+        }
+    #else
+        print("HTTP Core Not Found!")
+    #endif
+    
+    
+}elseif (clk("update")) {
+    #-- sim
+    timer("update",60)
+    
+    if(changed(Seat:driver():keyWalk())&Seat:driver():keyWalk()){
+        ThirdPerson=!ThirdPerson
+    }
+
+    if(changed(ThirdPerson)){
+        if(ThirdPerson){
+            CamPos=ThirdPersonPos
+            CamDistance=ThirdPersonDistance
+        }else{
+            CamPos=FirstPersonPos
+            CamDistance=FirstPersonDistance
+        }
+    }
+    
+    Mech_pos = Base:toWorld(vec(0,0,0))#(FL_p_real + FR_p_real + RL_p_real + RR_p_real)/4 - Down*Mech_height
+    
+    if(Seat:driver()){
+        
+        W = Seat:driver():keyForward()
+        S = Seat:driver():keyBack()
+        A = Seat:driver():keyLeft()
+        D = Seat:driver():keyRight()
+        
+        Rise = Seat:driver():keyJump()
+        
+        Duck = Seat:driver():keyDuck()
+        
+        Sprint = Seat:driver():keySprint()
+
+        Fire = Seat:driver():keyAttack1()
+        
+        CamAng3=CamAng
+        
+    }else{
+        if(Aim){
+            Aim = 0
+        }
+        
+        W = W2
+        S = S2
+        A = 0
+        D = 0
+        
+        Rise = 0
+        
+        Duck = 0
+        
+        Sprint = 0
+
+        Fire = 0
+        
+        CamAng3=CamAng2
+        
+    }
+    
+    if(!Editmode){
+    
+    Dir = Base:vel()
+    Mech_ang = Base:toWorld(ang(0,0,0))
+    
+    Mech_Vel_Y = (Base:right()*Base:velL():y()*0.15)
+    
+    Mech_Vel_Y2 = Mech_Vel_Y*(1-(2*clamp(A+D,0,1)))
+    
+    Mech_vel = (((Base:vel()*vec(1/(1+(Sprint*3.5)),1/(1+(Sprint*3.5)),0))*0.0045)*min(Dir:length(),Mech_speed)*(StepDistance/100)) + Mech_Vel_Y2
+    
+    Ranger_Left_Front = rangerOffset((Mech_height)*2,rangerOffset(Mech_pos,toWorld(FL_p_foot+(vec(4+(30*Duck),0,0)*clamp(1-(Dir:length()*0.01),0,1)),Ang,Mech_pos,Mech_ang) + FL_p_move):position(),Down)
+    Ranger_Right_Front = rangerOffset((Mech_height)*2,rangerOffset(Mech_pos,toWorld(FR_p_foot+(vec(-2-(25*Duck),5*Duck,0)*clamp(1-(Dir:length()*0.01),0,1)),Ang,Mech_pos,Mech_ang) + FR_p_move):position(),Down)
+    
+    Leg_Distance = Foot_R:pos():distance(Foot_L:pos())
+    
+    On_Ground = Ranger_Left_Front:hit()&Ranger_Right_Front:hit()
+    
+    RollBase = clamp(Base:velL():y()*0.05,-15,15)*0.6
+    
+    Roll = RollBase*(1-(2*clamp(A+D,0,1)))
+    
+    Pitch = clamp(Base:velL():x()*(0.02+(0.05*Sprint)),-5,15)*0.7
+    
+    Base:applyAngForce((ang(0, Base:toLocal(ang(0,CamAng3:yaw(),0)):yaw()*55, 0) + 
+    Base:toLocal(ang(Pitch, Base:angles():yaw(), Roll))*200 -
+    Base:angVel()*20 - ang(Base:angVel():pitch(),0,Base:angVel():roll())*10) * Inertia)
+    
+    Leg_Distance2 = ((clamp((Leg_Distance-1)*0.5,0,0.5)))
+    
+    A3++
+    
+    Height_Adj = Mech_height*((0.95/(1+Leg_Distance2+clamp(Duck*0.9,0,1.1)))+(sin(A3*3)*0.005))
+    
+    local Distance = (Ranger_Left_Front:distance()+Ranger_Right_Front:distance())/2
+    
+    local Movement_Direction = (((Base:forward()*(W-S))+(Base:right()*(D-A)))*vec(1,1,0)):normalized()*On_Ground
+    
+    if(On_Ground){
+        local Stand_Force=vec(0,0,((Height_Adj)*0.75)-Distance)*1.5
+        local Damping_Force=(-Base:vel()*vec(0.3,0.3,0.5))*1.05
+        local Move_Force=((Movement_Direction)*55)*(1+(Sprint*1.88))*1
+        Base:applyForce((Base:up()*Stand_Force*Mass)+(Damping_Force+Move_Force)*Mass)
+    }
+    if(changed(On_Ground)){
+        Base:propGravity(!On_Ground)
+    }
+    
+    Ent2Pos=holoEntity(2):pos()
+    Ent1Pos=holoEntity(1):pos()
+    
+    }else{
+        On_Ground = 1
+        Ent2Pos=Base:toWorld(vec(0,Leg_Pos_Offset:y(),(-Mech_height/2)+12))
+        Ent1Pos=Base:toWorld(vec(0,-Leg_Pos_Offset:y(),(-Mech_height/2)+12))
+    }
+    
+    digi_ik(Base, 26, 6, 7, 8, 9, 22, FSegmentLengthA, FSegmentLengthB, FSegmentLengthC, holoEntity(6), Ent2Pos, On_Ground, 90, ((-10*clamp(1-(Dir:length()*0.01),0,1))-8*Duck)*!Editmode)
+    digi_ik(Base, 27, 10, 11, 12, 13, 23, FSegmentLengthA, FSegmentLengthB, FSegmentLengthC, holoEntity(10), Ent1Pos, On_Ground, 90, ((7*clamp(1-(Dir:length()*0.01),0,1))+8*Duck)*!Editmode)
+    
+    if(!Editmode){
+    
+    Time_delta = curtime() - Time_current
+    Time_current = curtime()
+
+    if (Time_delta > 1) {
+        exit()
+    }
+
+    #-- gait sequencer
+    
+    if (Mech_gait_transition < 1) {
+        
+        Mech_gait_transition = min(Mech_gait_transition + (Time_delta*2.5),1)
+            
+        Mech_gait_time += ((1 - Mech_gait_transition)*Mech_gait_last[1,number] + Mech_gait_transition*Mech_gait_next[1,number])*Time_delta
+
+        FL_time = gseq((1 - Mech_gait_transition)*Mech_gait_last[3,number] + Mech_gait_transition*Mech_gait_next[3,number],(1 - Mech_gait_transition)*Mech_gait_last[4,number] + Mech_gait_transition*Mech_gait_next[4,number],Mech_gait_time)
+        FR_time = gseq((1 - Mech_gait_transition)*Mech_gait_last[5,number] + Mech_gait_transition*Mech_gait_next[5,number],(1 - Mech_gait_transition)*Mech_gait_last[6,number] + Mech_gait_transition*Mech_gait_next[6,number],Mech_gait_time)
+        RL_time = gseq((1 - Mech_gait_transition)*Mech_gait_last[7,number] + Mech_gait_transition*Mech_gait_next[7,number],(1 - Mech_gait_transition)*Mech_gait_last[8,number] + Mech_gait_transition*Mech_gait_next[8,number],Mech_gait_time)
+        RR_time = gseq((1 - Mech_gait_transition)*Mech_gait_last[9,number] + Mech_gait_transition*Mech_gait_next[9,number],(1 - Mech_gait_transition)*Mech_gait_last[10,number] + Mech_gait_transition*Mech_gait_next[10,number],Mech_gait_time)
+
+        Mech_speed = (1 - Mech_gait_transition)*Mech_gait_last[2,number] + Mech_gait_transition*Mech_gait_next[2,number]
+    }
+    else {
+        
+        Mech_gait_time += Mech_gait_next[1,number]*Time_delta
+        
+        FL_time = gseq(Mech_gait_next[3,number],Mech_gait_next[4,number],Mech_gait_time)
+        FR_time = gseq(Mech_gait_next[5,number],Mech_gait_next[6,number],Mech_gait_time)
+        RL_time = gseq(Mech_gait_next[7,number],Mech_gait_next[8,number],Mech_gait_time)
+        RR_time = gseq(Mech_gait_next[9,number],Mech_gait_next[10,number],Mech_gait_time)
+
+        Mech_speed = Mech_gait_next[2,number]
+    }
+    if (Mech_gait_time > 1) {
+        Mech_gait_time--
+    }
+
+    #-- stepgen
+    if (FL_time) {
+        if (!FL_state) {
+            soundStop("FL_step")
+            FL_a_last = FL_a_next
+            FL_p_last = FL_p_next
+            FL_p_move = Mech_vel
+            FL_state = 1
+        }
+        local Check = Ranger_Left_Front
+        if (Check:hit()) {
+            local Normal = Check:hitNormal()
+            FL_p_next = Check:position() + Normal*FL_groundz
+            local Line = FL_p_next - FL_p_last
+            if (Line:length() > FL_groundz) {
+                FL_p_real = mix(bezier(FL_p_last,mix(FL_p_next,FL_p_last,0.85) + Line:toAngle():up()*Line:length()*FL_stepz,FL_p_next,FL_time),FL_p_real,FL_time)
+                FL_a_next = quat(Normal:cross(FL_p_move):normalized():cross(Normal),Normal)
+                FL_a_real = slerp(quat(FL_a_real),slerp(FL_a_last,FL_a_next*qRotation(Left,sin(180*FL_time)*45),FL_time),FL_time):toAngle()
+
+                if (FL_state == 1) {
+                    FL_state = 2
+                }
+
+                soundVolume("FL_move",0.75 - 0.75*FL_time)
+                soundPitch("FL_move",50 - 10*FL_time)
+            }
+        }
+    }
+    elseif (FL_state) {
+        if (FL_state == 2) {
+            if (FL_ent) {
+                soundStop("FL_move")
+                FL_ent:soundPlay("FL_step",0,StepSound)
+            }
+        }
+        FL_p_real = FL_p_next
+        FL_a_real = FL_a_next:toAngle()
+        FL_state = 0
+    }
+    #-- stepgen
+    if (FR_time) {
+        if (!FR_state) {
+            soundStop("FR_step")
+            FR_a_last = FR_a_next
+            FR_p_last = FR_p_next
+            FR_p_move = Mech_vel
+            FR_state = 1
+        }
+        local Check = Ranger_Right_Front
+        if (Check:hit()) {
+            local Normal = Check:hitNormal()
+            FR_p_next = Check:position() + Normal*FR_groundz
+            local Line = FR_p_next - FR_p_last
+            if (Line:length() > FR_groundz) {
+                FR_p_real = mix(bezier(FR_p_last,mix(FR_p_next,FR_p_last,0.85) + Line:toAngle():up()*Line:length()*FR_stepz,FR_p_next,FR_time),FR_p_real,FR_time)
+                FR_a_next = quat(Normal:cross(FR_p_move):normalized():cross(Normal),Normal)
+                FR_a_real = slerp(quat(FR_a_real),slerp(FR_a_last,FR_a_next*qRotation(Left,sin(180*FR_time)*45),FR_time),FR_time):toAngle()
+
+                if (FR_state == 1) {
+                    FR_state = 2
+                }
+
+                soundVolume("FR_move",0.75 - 0.75*FR_time)
+                soundPitch("FR_move",50 - 10*FR_time)
+            }
+        }
+    }
+    elseif (FR_state) {
+        if (FR_state == 2) {
+            if (FR_ent) {
+                soundStop("FR_move")
+                FR_ent:soundPlay("FR_step",0,StepSound)
+            }
+        }
+        FR_p_real = FR_p_next
+        FR_a_real = FR_a_next:toAngle()
+        FR_state = 0
+    }
+    #-- stepgen
+    if (RL_time) {
+        if (!RL_state) {
+            soundStop("RL_step")
+            RL_a_last = RL_a_next
+            RL_p_last = RL_p_next
+            RL_p_move = Mech_vel
+            RL_state = 1
+        }
+        
+        
+    }
+    elseif (RL_state) {
+        RL_p_real = RL_p_next
+        RL_a_real = RL_a_next:toAngle()
+        RL_state = 0
+    }
+    #-- stepgen
+    if (RR_time) {
+        if (!RR_state) {
+            soundStop("RR_step")
+            RR_a_last = RR_a_next
+            RR_p_last = RR_p_next
+            RR_p_move = Mech_vel
+            RR_state = 1
+        }
+    }
+    elseif (RR_state) {
+        RR_p_real = RR_p_next
+        RR_a_real = RR_a_next:toAngle()
+        RR_state = 0
+    }
+
+    #-- mech
+
+    holoPos(1,FL_p_real)
+    holoPos(2,FR_p_real)
+    holoPos(3,RL_p_real)
+    holoPos(4,RR_p_real)
+
+    holoAng(1,FL_a_real)
+    holoAng(2,FR_a_real)
+    holoAng(3,RL_a_real)
+    holoAng(4,RR_a_real)
+
+    local Dist = Dir:length() > 300
+    if (changed(Sprint)) {
+        Mech_gait_transition = 0
+        Mech_gait_last = Mech_gait_next
+        if (Sprint) {
+            Mech_gait_next = Mech_gaits["gallop",array]
+        } else { 
+            Mech_gait_next = Mech_gaits["walk",array]
+        }
+    }
+    
+    }
+}
+
+if(changed(Seat:driver())){
+    if(Seat:driver()){
+        Active = 1
+    }else{
+        Active = 0
+    }
+}
+
+if(dupefinished()){
+    reset()
+}
+
+#ifdef httpRequest(string)
+    if(httpClk()){
+        if(httpSuccess()&!Block){
+            ReturnData=httpUrlDecode(httpData())
+            
+            print("["+entity():getName()+"]")
+            print("Running version: "+Version)
+            
+            if(Version:toNumber()!=ReturnData:toNumber()){
+                print("Update available!")
+                print("Latest version: "+ReturnData)
+                print("Link: "+Link)
+            }
+        }
+    }
+#endif
