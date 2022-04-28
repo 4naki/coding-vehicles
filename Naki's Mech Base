@@ -593,12 +593,13 @@ if(dupefinished()){
             ReturnData=httpUrlDecode(httpData())
             
             print("["+entity():getName()+"]")
-            print("Up to date! Running version: "+Version)
             
             if(Version:toNumber()!=ReturnData:toNumber()){
-                print("Update available!")
+                print("Update available! Running version: "+Version)
                 print("Latest version: "+ReturnData)
                 print("Link: "+Link)
+            }else{
+                print("Up to date! Running version: "+Version)
             }
         }
     }
