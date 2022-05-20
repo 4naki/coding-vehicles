@@ -1,0 +1,31 @@
+@name ACF NOS Bottle Naki Edition
+@inputs RPM Active Throttle Button
+@outputs TqAdd RpmAdd Boost
+
+@persist MaxRPM TqAddBaseVal RpmAddBaseVal On
+
+@model models/props_junk/garbage_plasticbottle003a.mdl
+
+interval(100)
+
+if(first()){
+    entity():setMaterial("models/debug/debugwhite")
+    entity():setColor(vec(0,0,255))
+    
+    MaxRPM=7600
+    
+    TqAddBaseVal=800
+    RpmAddBaseVal=200
+    
+}
+if(changed(Button)&Button){
+    On=!On
+}
+Mult=((RPM/MaxRPM)*(Throttle/100))*On
+TqAdd=round((TqAddBaseVal*Mult)*(Throttle/100))*On
+RpmAdd=round((TqAddBaseVal*Mult)*(Throttle/100))*On
+
+Boost=round((TqAdd/TqAddBaseVal)+(RpmAdd/TqAddBaseVal))*(RPM/(MaxRPM*0.5))
+if(dupefinished()){
+    reset()
+}
