@@ -1,6 +1,6 @@
 @name ACF NOS Bottle Naki Edition
 @inputs RPM Active Throttle Button
-@outputs TqAdd RpmAdd Boost
+@outputs TqAdd RpmAdd Boost On
 
 @persist MaxRPM TqAddBaseVal RpmAddBaseVal On
 
@@ -17,6 +17,9 @@ if(first()){
     TqAddBaseVal=800
     RpmAddBaseVal=200
     
+    entity():soundPlay(1,0,"+nitrous/+nitrous1_purge_using.wav")
+    soundVolume(1,0)
+    
 }
 if(changed(Button)&Button){
     On=!On
@@ -24,7 +27,7 @@ if(changed(Button)&Button){
 Mult=((RPM/MaxRPM)*(Throttle/100))*On
 TqAdd=round((TqAddBaseVal*Mult)*(Throttle/100))*On
 RpmAdd=round((TqAddBaseVal*Mult)*(Throttle/100))*On
-
+soundVolume(1,(On*0.2+Throttle/100)/10)
 Boost=round((TqAdd/TqAddBaseVal)+(RpmAdd/TqAddBaseVal))*(RPM/(MaxRPM*0.5))
 if(dupefinished()){
     reset()
